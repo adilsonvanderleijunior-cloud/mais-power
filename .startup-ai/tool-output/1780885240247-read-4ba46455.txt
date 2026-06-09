@@ -1,0 +1,91 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+179|   // Question states
+180|   const [questionPhase, setQuestionPhase] = useState<QuestionPhase>('hidden')
+181|   const [questionCategory, setQuestionCategory] = useState<QuestionCategory>('math')
+182|   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+183|   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | null>(null)
+184|   const [lastCorrectAnswerText, setLastCorrectAnswerText] = useState('')
+185| 
+186|   const { session, showCapitalPrompt, initSession, recordResult, resetSession } = useSession()
+187| 
+188|   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+189|   const startTimeRef = useRef(0)
+190|   const bonusStartRef = useRef(0)
+191| 
+192|   const BASE_MS = timeReduced ? 150000 : gameConfig.holdDuration * 1000
+193|   const winAmount = bet * gameConfig.multiplier
+194|   const bonusAmountExtra = gameConfig.bonusAmount
+195|   const STRENGTH_MS = 30000
+196|   const BONUS_TARGET_MS = (gameConfig.bonusDuration - gameConfig.holdDuration) * 1000
+197|   const showBonus = bet >= gameConfig.bonusThreshold
+198| 
+199|   const stopTimer = useCallback(() => {
+200|     if (timerRef.current) {
+201|       clearInterval(timerRef.current)
+202|       timerRef.current = null
+203|     }
+204|   }, [])
+205| 
+206|   const handleWin = useCallback((withBonus: boolean = false) => {
+207|     stopTimer()
+208|     setGameState(withBonus ? 'bonus_won' : 'won')
+209|     const payout = withBonus ? winAmount + bonusAmountExtra : winAmount
+210|     recordResult(true, bet, payout)
+211|     setGripPressed(false)
+212|     setTimeout(() => setShowResult(true), 600)
+213|   }, [stopTimer, recordResult, bet, winAmount, bonusAmountExtra])
+214| 
+215|   const handleLoss = useCallback(() => {
+216|     setLostInBonus(phase === 'bonus')
+217|     stopTimer()
+218|     setGameState('lost')
+219|     recordResult(false, bet, 0)
+220|     setGripPressed(false)
+221|     setPhase('normal')
+222|     setTimeout(() => setShowResult(true), 400)
+223|   }, [stopTimer, recordResult, bet, phase])
+224| 
+225|   const startGame = useCallback(() => {
+226|     startTimeRef.current = Date.now()
+227|     setElapsed(0)
+228|     setPhase('normal')
+229|     setGripPressed(true)
+230|     setGameState('playing')
+231|     setShowResult(false)
+232|   }, [])
+233| 
+234|   // Start the game directly from idle (no question)
+235|   const startDirect = useCallback(() => {
+236|     // Reset any question state
+237|     setQuestionPhase('hidden')
+238|     setCurrentQuestion(null)
+239|     setLastAnswerCorrect(null)
+240|     startGame()
+241|   }, [startGame])
+242| 
+243|   // Start the game after answering a question
+244|   const startAfterQuestion = useCallback(() => {
+245|     setQuestionPhase('hidden')
+246|     setCurrentQuestion(null)
+247|     setLastAnswerCorrect(null)
+248|     startGame()
+249|   }, [startGame])
+250| 
+251|   // Open question flow: choose category
+252|   const openQuestionFlow = useCallback(() => {
+253|     setQuestionPhase('category')
+254|   }, [])
+255| 
+256|   // Choose category
+257|   const chooseCategory = useCallback((cat: QuestionCategory) => {
+258|     setQuestionCategory(cat)
+259|     const pool = cat === 'math' ? mathQuestions : generalQuestions
+260|     const q = pool[Math.floor(Math.random() * pool.length)]
+261|     setCurrentQuestion(q)
+262|     setLastAnswerCorrect(null)
+263|     setQuestionPhase('answering')
+
+[Showing lines 179-263 of 938. Use offset=263 to continue.]
+</content>

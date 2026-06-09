@@ -1,0 +1,169 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+776|         if (!open) {
+777|           setQuestionPhase('hidden')
+778|           setTimeReduced(false)
+779|           setLastAnswerCorrect(null)
+780|           setCurrentQuestion(null)
+781|         }
+782|       }}>
+783|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+784|           <DialogHeader>
+785|             <DialogTitle className="text-center text-xl">
+786|               {lastAnswerCorrect ? (
+787|                 <span style={{ color: '#30d158' }}>✅ ACERTOU!</span>
+788|               ) : (
+789|                 <span className="text-red-500">❌ ERROU!</span>
+790|               )}
+791|             </DialogTitle>
+792|           </DialogHeader>
+793|           <div className="flex flex-col items-center gap-3 mt-1">
+794|             {lastAnswerCorrect ? (
+795|               <>
+796|                 <div className="flex items-center gap-2">
+797|                   <Zap className="w-6 h-6" style={{ color: 'var(--mais-gold)' }} />
+798|                   <span className="text-lg font-bold" style={{ color: 'var(--mais-gold)' }}>
+799|                     Vai fazer 2:30s! ⚡
+800|                   </span>
+801|                 </div>
+802|                 <p className="text-zinc-400 text-sm text-center">
+803|                   Resposta correta! Tempo reduzido 💪
+804|                 </p>
+805|               </>
+806|             ) : (
+807|               <>
+808|                 <div className="text-lg font-bold text-zinc-300 text-center">
+809|                   Vai fazer 3:00
+810|                 </div>
+811|                 <div className="bg-zinc-900 rounded-xl px-4 py-3 text-center w-full">
+812|                   <p className="text-xs text-zinc-500 mb-1">RESPOSTA CORRETA:</p>
+813|                   <p className="text-lg font-bold" style={{ color: 'var(--mais-gold)' }}>
+814|                     {lastCorrectAnswerText}
+815|                   </p>
+816|                 </div>
+817|                 <p className="text-zinc-500 text-sm text-center">
+818|                   Na próxima acertas! 💪🏾
+819|                 </p>
+820|               </>
+821|             )}
+822|             <button
+823|               onClick={startAfterQuestion}
+824|               className="start-btn mt-2 w-full"
+825|               style={{ touchAction: 'manipulation' }}
+826|             >
+827|               <Play className="w-5 h-5" />
+828|               INICIAR JOGO
+829|             </button>
+830|             <button
+831|               onClick={() => {
+832|                 setQuestionPhase('hidden')
+833|                 setTimeReduced(false)
+834|                 setLastAnswerCorrect(null)
+835|                 setCurrentQuestion(null)
+836|               }}
+837|               className="w-full py-3 rounded-xl font-bold text-sm mt-1"
+838|               style={{ background: 'transparent', color: '#666', border: '1px solid #333', touchAction: 'manipulation' }}
+839|             >
+840|               Cancelar
+841|             </button>
+842|           </div>
+843|         </DialogContent>
+844|       </Dialog>
+845| 
+846|       {/* ===== RESULT DIALOG ===== */}
+847|       <Dialog open={showResult} onOpenChange={() => {}}>
+848|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+849|           <DialogHeader>
+850|             {(gameState === 'won' || gameState === 'bonus_won') ? (
+851|               <DialogTitle className="text-center">
+852|                 <div className="text-5xl font-black mb-2" style={{ color: '#30d158' }}>
+853|                   🏆 VITÓRIA!
+854|                 </div>
+855|                 <EmojiParticles emojis={WIN_EMOJIS} count={6} />
+856|               </DialogTitle>
+857|             ) : (
+858|               <DialogTitle className="text-center">
+859|                 <div className="text-5xl font-black mb-2 text-red-600">
+860|                   💀 DERROTA!
+861|                 </div>
+862|               </DialogTitle>
+863|             )}
+864|             <DialogDescription asChild>
+865|               <div className="text-center mt-2">
+866|                 {(gameState === 'won' || gameState === 'bonus_won') ? (
+867|                   <>
+868|                     <div className="text-4xl font-black currency-bling">
+869|                       +Kz {((gameState === 'bonus_won' ? winAmount + bonusAmountExtra : winAmount)).toLocaleString('pt-AO')}
+870|                     </div>
+871|                     {gameState === 'bonus_won' && (
+872|                       <div className="flex flex-col items-center gap-1 mt-2">
+873|                         <div className="bonus-notification-badge">
+874|                           <span className="text-2xl">🎁</span>
+875|                           <span className="font-bold text-orange-300">BÓNUS: +Kz {bonusAmountExtra.toLocaleString('pt-AO')}</span>
+876|                         </div>
+877|                         <p className="text-zinc-500 text-sm mt-1">
+878|                           💪 Chegou aos 5:30! Resistência lendária!
+879|                         </p>
+880|                       </div>
+881|                     )}
+882|                   </>
+883|                 ) : (
+884|                   <div className="flex flex-col items-center gap-3 mt-4">
+885|                     <div className="text-5xl font-black text-red-500">
+886|                       -Kz {bet.toLocaleString('pt-AO')}
+887|                     </div>
+888|                     <p className="text-zinc-400 text-sm">
+889|                       {lostInBonus ? 'Soltou no bónus! Perdeu tudo 😤' : `Soltou com ${formatTime(Math.max(0, BASE_MS - elapsed))} restantes 😤`}
+890|                     </p>
+891|                     <p className="text-base mt-1" style={{ color: 'var(--mais-gold)' }}>
+892|                       {messages.encouragement}
+893|                     </p>
+894|                   </div>
+895|                 )}
+896|               </div>
+897|             </DialogDescription>
+898|           </DialogHeader>
+899|           <div className="flex flex-col gap-2 mt-2">
+900|             <Button
+901|               onClick={() => { resetGame() }}
+902|               className="w-full font-bold py-5 text-base"
+903|               style={{ background: 'var(--mais-gold)', color: '#0a0a0a' }}
+904|             >
+905|               <ArrowRight className="w-5 h-5 mr-2" />
+906|               💪 Jogar Novamente
+907|             </Button>
+908|           </div>
+909|         </DialogContent>
+910|       </Dialog>
+911|     </div>
+912|   )
+913| }
+914| 
+915| // Capital prompt inline
+916| function CapitalPromptInline({ onConfirm }: { onConfirm: (val: number) => void }) {
+917|   const [val, setVal] = useState(50000)
+918| 
+919|   return (
+920|     <div className="flex flex-col items-center gap-4 py-2">
+921|       <input
+922|         type="number"
+923|         min={1000}
+924|         value={val}
+925|         onChange={(e) => setVal(Math.max(1000, Number(e.target.value) || 1000))}
+926|         className="bg-zinc-900 text-4xl font-black text-white text-center w-full py-3 rounded-xl border border-zinc-700 outline-none"
+927|       />
+928|       <Button
+929|         onClick={() => onConfirm(val)}
+930|         className="w-full font-bold py-5 text-base"
+931|         style={{ background: 'var(--mais-gold)', color: '#0a0a0a' }}
+932|       >
+933|         💰 CONFIRMAR CAPITAL
+934|       </Button>
+935|     </div>
+936|   )
+937| }
+938| 
+
+[End of file: 938 lines]
+</content>

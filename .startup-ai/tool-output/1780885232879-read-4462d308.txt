@@ -1,0 +1,126 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+601|               {bet >= gameConfig.bonusThreshold && (
+602|                 <div className="bonus-indicator mt-1">
+603|                   <Gift className="w-4 h-4" />
+604|                   <span>BÓNUS DISPONÍVEL: +Kz {gameConfig.bonusAmount.toLocaleString('pt-AO')} até 5:30</span>
+605|                 </div>
+606|               )}
+607| 
+608|               {/* Time display (shows if reduced by question) */}
+609|               {timeReduced && (
+610|                 <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: '#30d158' }}>
+611|                   <Zap className="w-3.5 h-3.5" />
+612|                   <span>⚡ Tempo reduzido: 2:30</span>
+613|                 </div>
+614|               )}
+615| 
+616|               {/* Action buttons row */}
+617|               <div className="flex gap-3 mt-3 w-full">
+618|                 <button
+619|                   onClick={startDirect}
+620|                   className="start-btn flex-1 py-3 sm:py-4 text-sm sm:text-base"
+621|                   style={{ touchAction: 'manipulation' }}
+622|                 >
+623|                   <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6" />
+624|                   APERTADO 💪
+625|                 </button>
+626|                 <button
+627|                   onClick={openQuestionFlow}
+628|                   className="question-btn flex-1 py-3 sm:py-4 text-sm sm:text-base"
+629|                   style={{ touchAction: 'manipulation' }}
+630|                 >
+631|                   <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+632|                   PERGUNTA?
+633|                 </button>
+634|               </div>
+635|             </div>
+636|           )}
+637| 
+638|           {/* Prize display */}
+639|           {(gameState === 'playing' || gameState === 'won' || gameState === 'bonus_won') && (
+640|             <div className="text-center mt-1">
+641|               <div className="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-0.5 font-bold">
+642|                 🏆 Prémio
+643|               </div>
+644|               <div className={`text-3xl font-black ${
+645|                 gameState === 'bonus_won' ? 'text-orange-400' : 'currency-bling'
+646|               }`}>
+647|                 Kz {winAmount.toLocaleString('pt-AO')}
+648|               </div>
+649|               {phase === 'bonus' && (
+650|                 <div className="text-xl font-black text-orange-400 mt-0.5">
+651|                   + BÓNUS Kz {bonusAmountExtra.toLocaleString('pt-AO')}
+652|                 </div>
+653|               )}
+654|               {gameState === 'bonus_won' && (
+655|                 <div className="text-lg font-black text-orange-400 mt-0.5">
+656|                   🎁 +Kz {bonusAmountExtra.toLocaleString('pt-AO')}
+657|                 </div>
+658|               )}
+659|             </div>
+660|           )}
+661|         </div>
+662|       )}
+663| 
+664|       {/* ===== BALANCE TAB ===== */}
+665|       {tab === 'balance' && (
+666|         <div className="z-10 flex-1 overflow-y-auto px-4 py-2 w-full max-w-lg mx-auto">
+667|           <BalanceDashboard
+668|             session={session}
+669|             onReset={resetSession}
+670|           />
+671|         </div>
+672|       )}
+673| 
+674|       {/* ===== QUESTION DIALOG: Category Choice ===== */}
+675|       <Dialog open={questionPhase === 'category'} onOpenChange={(open) => {
+676|         if (!open) {
+677|           setQuestionPhase('hidden')
+678|           setTimeReduced(false)
+679|           setLastAnswerCorrect(null)
+680|           setCurrentQuestion(null)
+681|         }
+682|       }}>
+683|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+684|             <DialogHeader>
+685|               <DialogTitle className="text-center text-xl currency-bling">
+686|                 ❓ ESCOLHA A CATEGORIA
+687|             </DialogTitle>
+688|             <DialogDescription className="text-center text-zinc-400">
+689|               Se acertar, o tempo reduz para 2:30 ⚡<br />
+690|               Se errar, mantém 3:00
+691|             </DialogDescription>
+692|           </DialogHeader>
+693|           <div className="flex flex-col gap-3 mt-2">
+694|             <button
+695|               onClick={() => chooseCategory('math')}
+696|               className="category-btn"
+697|             >
+698|               <Brain className="w-6 h-6" />
+699|               <div className="text-left">
+700|                 <div className="text-lg font-bold">MATEMÁTICA</div>
+701|                 <div className="text-xs text-zinc-400">contas de rasteira 🧮</div>
+702|               </div>
+703|             </button>
+704|             <button
+705|               onClick={() => chooseCategory('general')}
+706|               className="category-btn"
+707|             >
+708|               <BookOpen className="w-6 h-6" />
+709|               <div className="text-left">
+710|                 <div className="text-lg font-bold">CULTURA GERAL</div>
+711|                 <div className="text-xs text-zinc-400">conhecimentos gerais 🌍</div>
+712|               </div>
+713|             </button>
+714|             <Button
+715|               onClick={() => setQuestionPhase('hidden')}
+716|               className="w-full font-bold py-4 text-base"
+717|               style={{ background: 'transparent', color: '#666', border: '1px solid #333' }}
+718|             >
+719|               Cancelar
+720|             </Button>
+
+[Showing lines 601-720 of 938. Use offset=720 to continue.]
+</content>

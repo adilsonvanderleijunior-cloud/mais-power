@@ -1,0 +1,126 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+249|   }, [startGame])
+250| 
+251|   // Open question flow: choose category
+252|   const openQuestionFlow = useCallback(() => {
+253|     setQuestionPhase('category')
+254|   }, [])
+255| 
+256|   // Choose category
+257|   const chooseCategory = useCallback((cat: QuestionCategory) => {
+258|     setQuestionCategory(cat)
+259|     const pool =
+260|       cat === 'math' ? mathQuestions :
+261|       cat === 'general' ? generalQuestions :
+262|       cat === 'saude' ? saudeQuestions :
+263|       cat === 'biblia' ? bibleQuestions :
+264|       cat === 'logica' ? logicaQuestions :
+265|       portuguesQuestions
+266|     const q = pool[Math.floor(Math.random() * pool.length)]
+267|     setCurrentQuestion(q)
+268|     setLastAnswerCorrect(null)
+269|     setQuestionPhase('answering')
+270|   }, [])
+271| 
+272|   // Answer a question
+273|   const handleAnswer = useCallback((answerIdx: number) => {
+274|     if (!currentQuestion) return
+275|     const correct = answerIdx === currentQuestion.correct
+276|     setLastAnswerCorrect(correct)
+277|     setLastCorrectAnswerText(currentQuestion.options[currentQuestion.correct])
+278|     setTimeReduced(correct)
+279|     setQuestionPhase('result')
+280|   }, [currentQuestion])
+281| 
+282|   const onPress = useCallback(() => {
+283|     if (gameState === 'playing') {
+284|       setGripPressed(true)
+285|     }
+286|     // In idle, Apertado is handled by startDirect or openQuestionFlow separately
+287|   }, [gameState])
+288| 
+289|   const onRelease = useCallback(() => {
+290|     if (gameState === 'playing' && gripPressed) {
+291|       setGripPressed(false)
+292|       handleLoss()
+293|     }
+294|   }, [gameState, gripPressed, handleLoss])
+295| 
+296|   useEffect(() => {
+297|     if (gameState !== 'playing') return
+298| 
+299|     timerRef.current = setInterval(() => {
+300|       const now = Date.now()
+301|       const e = now - startTimeRef.current
+302|       setElapsed(e)
+303| 
+304|       if (phase === 'normal') {
+305|         if (e >= BASE_MS) {
+306|           stopTimer()
+307|           if (showBonus) {
+308|             setPhase('bonus')
+309|             bonusStartRef.current = now
+310|             setElapsed(0)
+311|           } else {
+312|             handleWin(false)
+313|           }
+314|         }
+315|       } else if (phase === 'bonus') {
+316|         const bonusE = now - bonusStartRef.current
+317|         setElapsed(bonusE)
+318|         if (bonusE >= BONUS_TARGET_MS) {
+319|           handleWin(true)
+320|         }
+321|       }
+322|     }, 33)
+323| 
+324|     return () => stopTimer()
+325|   }, [gameState, phase, BASE_MS, showBonus, handleWin, stopTimer, BONUS_TARGET_MS])
+326| 
+327|   useEffect(() => {
+328|     const onDown = (e: KeyboardEvent) => {
+329|       if (e.code === 'Space' || e.code === 'Enter') {
+330|         e.preventDefault()
+331|         onPress()
+332|       }
+333|     }
+334|     const onUp = (e: KeyboardEvent) => {
+335|       if (e.code === 'Space' || e.code === 'Enter') {
+336|         e.preventDefault()
+337|         onRelease()
+338|       }
+339|     }
+340|     window.addEventListener('keydown', onDown)
+341|     window.addEventListener('keyup', onUp)
+342|     return () => {
+343|       window.removeEventListener('keydown', onDown)
+344|       window.removeEventListener('keyup', onUp)
+345|     }
+346|   }, [onPress, onRelease])
+347| 
+348|   const resetGame = () => {
+349|     setGameState('idle')
+350|     setElapsed(0)
+351|     setShowResult(false)
+352|     setPhase('normal')
+353|     setGripPressed(false)
+354|     setLostInBonus(false)
+355|     setTimeReduced(false)
+356|     setQuestionPhase('hidden')
+357|     setCurrentQuestion(null)
+358|     setLastAnswerCorrect(null)
+359|     stopTimer()
+360|   }
+361| 
+362|   // Display timer: show total elapsed from game start (including bonus phase)
+363|   const totalElapsed = phase === 'normal' ? elapsed : BASE_MS + elapsed
+364|   const displayTime = Math.min(totalElapsed, BASE_MS + BONUS_TARGET_MS)
+365| 
+366|   const isUrgent = phase === 'normal'
+367|     ? elapsed >= BASE_MS - 10000
+368|     : elapsed >= BONUS_TARGET_MS - 10000
+
+[Showing lines 249-368 of 988. Use offset=368 to continue.]
+</content>

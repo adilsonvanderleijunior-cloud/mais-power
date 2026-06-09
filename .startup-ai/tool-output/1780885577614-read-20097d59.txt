@@ -1,0 +1,193 @@
+<path requested="src/data/siteContent.ts" resolved="src/data/siteContent.ts"></path>
+<type>file</type>
+<content>
+  1| export const gameConfig = {
+  2|   appName: '+MAIS POWER',
+  3|   tagline: 'CONHEÇA A SUA FORÇA E RESISTÊNCIA',
+  4|   description: 'Aperte e segure o grip por 3 minutos. Se soltar, perde o que apostou. Se aguentar, leva o triplo!',
+  5|   holdDuration: 180,
+  6|   multiplier: 3,
+  7|   currency: 'Kz',
+  8|   minBet: 100,
+  9|   maxBet: 500000,
+ 10|   defaultBet: 5000,
+ 11|   bonusThreshold: 500,
+ 12|   bonusAmount: 5000,
+ 13|   bonusDuration: 330,
+ 14| }
+ 15| 
+ 16| export const messages = {
+ 17|   idle: 'PRONTO PARA JOGAR?',
+ 18|   holding: 'SEGURE FIRME!',
+ 19|   won: 'VOCÊ VENCEU! 🔥',
+ 20|   lost: 'SOLTOU! PERDEU TUDO! 💀',
+ 21|   encouragement: 'você é forte, tenta de novo 💪🏾',
+ 22|   pressToStart: 'Clique em Apertado e não clique em Abriu',
+ 23| }
+ 24| 
+ 25| export interface Question {
+ 26|   question: string
+ 27|   options: string[]
+ 28|   correct: number
+ 29| }
+ 30| 
+ 31| export const mathQuestions: Question[] = [
+ 32|   { question: '-5 - 5 = ?', options: ['0', '-10', '10', '-15'], correct: 1 },
+ 33|   { question: '-2 = x, qual o valor de x?', options: ['2', '0', '-2', '1'], correct: 2 },
+ 34|   { question: '-3 + 7 = ?', options: ['4', '-4', '10', '-10'], correct: 0 },
+ 35|   { question: 'Qual é o dobro de -6?', options: ['12', '-12', '3', '-3'], correct: 1 },
+ 36|   { question: '(-2) × (-3) = ?', options: ['-6', '6', '5', '-5'], correct: 1 },
+ 37|   { question: '-10 + (-5) = ?', options: ['5', '-15', '-5', '15'], correct: 1 },
+ 38|   { question: '8 - (-2) = ?', options: ['6', '-6', '10', '-10'], correct: 2 },
+ 39|   { question: 'O oposto de -7 é?', options: ['7', '-7', '0', '14'], correct: 0 },
+ 40|   { question: '-4 × 3 = ?', options: ['12', '-12', '1', '-1'], correct: 1 },
+ 41|   { question: '-15 ÷ 3 = ?', options: ['5', '-5', '3', '-3'], correct: 1 },
+ 42|   { question: '(-1) × (-1) × (-1) = ?', options: ['1', '-1', '0', '3'], correct: 1 },
+ 43|   { question: 'Qual é o valor de | -8 |?', options: ['-8', '8', '0', '16'], correct: 1 },
+ 44|   { question: '5 - 10 = ?', options: ['5', '-5', '15', '-15'], correct: 1 },
+ 45|   { question: '-100 ÷ (-25) = ?', options: ['4', '-4', '25', '-25'], correct: 0 },
+ 46|   { question: '2x = -10, qual o valor de x?', options: ['-5', '5', '10', '-20'], correct: 0 },
+ 47| ]
+ 48| 
+ 49| export const generalQuestions: Question[] = [
+ 50|   {
+ 51|     question: 'Qual é a capital de Angola?',
+ 52|     options: ['Luanda', 'Benguela', 'Huambo', 'Lubango'],
+ 53|     correct: 0,
+ 54|   },
+ 55|   {
+ 56|     question: 'Quantos minutos tem 1 hora?',
+ 57|     options: ['30', '45', '60', '100'],
+ 58|     correct: 2,
+ 59|   },
+ 60|   {
+ 61|     question: 'O sol nasce a que lado?',
+ 62|     options: ['Nascente', 'Poente', 'Norte', 'Sul'],
+ 63|     correct: 0,
+ 64|   },
+ 65|   {
+ 66|     question: 'Qual destes é um metal precioso?',
+ 67|     options: ['Ouro', 'Ferro', 'Cobre', 'Alumínio'],
+ 68|     correct: 0,
+ 69|   },
+ 70|   {
+ 71|     question: 'Quantos dias tem uma semana?',
+ 72|     options: ['5', '6', '7', '8'],
+ 73|     correct: 2,
+ 74|   },
+ 75|   {
+ 76|     question: 'Qual é o maior oceano do mundo?',
+ 77|     options: ['Atlântico', 'Índico', 'Pacífico', 'Ártico'],
+ 78|     correct: 2,
+ 79|   },
+ 80|   {
+ 81|     question: 'O futebol joga-se com as mãos?',
+ 82|     options: ['Sim', 'Não', 'Às vezes', 'Depende'],
+ 83|     correct: 1,
+ 84|   },
+ 85|   {
+ 86|     question: 'Qual destes países fica em África?',
+ 87|     options: ['Brasil', 'Portugal', 'Angola', 'Espanha'],
+ 88|     correct: 2,
+ 89|   },
+ 90|   {
+ 91|     question: 'Quantos meses tem um ano?',
+ 92|     options: ['10', '11', '12', '13'],
+ 93|     correct: 2,
+ 94|   },
+ 95|   {
+ 96|     question: 'O diamante é um mineral?',
+ 97|     options: ['Sim', 'Não', 'Planta', 'Metal'],
+ 98|     correct: 0,
+ 99|   },
+100|   {
+101|     question: 'Qual o maior país do mundo?',
+102|     options: ['EUA', 'China', 'Rússia', 'Canadá'],
+103|     correct: 2,
+104|   },
+105|   {
+106|     question: 'Quantas cores tem o arco-íris?',
+107|     options: ['5', '6', '7', '8'],
+108|     correct: 2,
+109|   },
+110|   {
+111|     question: 'Em que continente fica o Egito?',
+112|     options: ['Europa', 'Ásia', 'África', 'América'],
+113|     correct: 2,
+114|   },
+115|   {
+116|     question: 'Qual o animal mais rápido do mundo?',
+117|     options: ['Leão', 'Guepardo', 'Águia', 'Cavalo'],
+118|     correct: 1,
+119|   },
+120|   {
+121|     question: 'Quantos lados tem um triângulo?',
+122|     options: ['2', '3', '4', '5'],
+123|     correct: 1,
+124|   },
+125| ]
+126| 
+127| // SAÚDE - perguntas de rasteira
+128| export const saudeQuestions: Question[] = [
+129|   { question: 'Qual é o maior órgão do corpo humano?', options: ['Coração', 'Fígado', 'Pele', 'Pulmão'], correct: 2 },
+130|   { question: 'Quantos ossos tem o corpo humano adulto?', options: ['106', '206', '306', '150'], correct: 1 },
+131|   { question: 'O coração bate em média quantas vezes por dia?', options: ['10.000', '100.000', '1.000.000', '50.000'], correct: 1 },
+132|   { question: 'Qual destes NÃO é um tipo de diabetes?', options: ['Tipo 1', 'Tipo 2', 'Tipo 3', 'Gestacional'], correct: 2 },
+133|   { question: 'Quantos litros de sangue tem um adulto médio?', options: ['1-2 L', '5-6 L', '10-12 L', '15-20 L'], correct: 1 },
+134|   { question: 'Qual é o menor osso do corpo humano?', options: ['Falange do dedo', 'Dente', 'Estribo (ouvido)', 'Osso lacrimal'], correct: 2 },
+135|   { question: 'Para matar bactérias, a água deve ferver por quanto tempo?', options: ['10 segundos', '1 minuto', '10 minutos', '30 minutos'], correct: 1 },
+136|   { question: 'Quantos dentes tem um adulto saudável?', options: ['28', '30', '32', '36'], correct: 2 },
+137|   { question: 'Qual a função principal das plaquetas?', options: ['Transportar oxigénio', 'Combater infeções', 'Coagulação do sangue', 'Produzir hormonas'], correct: 2 },
+138|   { question: 'O cérebro humano usa quantos % da sua capacidade?', options: ['10%', '20%', '50%', '100%'], correct: 3 },
+139|   { question: 'Qual o maior osso do corpo humano?', options: ['Tíbia', 'Fémur', 'Úmero', 'Rádio'], correct: 1 },
+140|   { question: 'Quantos pares de costelas tem o corpo humano?', options: ['10', '12', '14', '16'], correct: 1 },
+141|   { question: 'O apêndice serve para quê?', options: ['Nada', 'Ajuda na digestão', 'Produz linfócitos', 'Armazena gordura'], correct: 0 },
+142|   { question: 'Quantos % do corpo é água?', options: ['40%', '60%', '80%', '95%'], correct: 1 },
+143|   { question: 'Qual destes NÃO é um grupo sanguíneo?', options: ['A', 'B', 'C', 'O'], correct: 2 },
+144|   { question: 'A que horas o corpo produz mais cortisol naturalmente?', options: ['À noite', 'De manhã ao acordar', 'Ao almoço', 'Durante o sono profundo'], correct: 1 },
+145|   { question: 'Qual o músculo mais forte do corpo humano?', options: ['Bíceps', 'Coração', 'Músculo masseter (mandíbula)', 'Glúteo'], correct: 2 },
+146|   { question: 'Quantos sentidos o ser humano tem oficialmente?', options: ['3', '5', '7', '9'], correct: 1 },
+147|   { question: 'A febre acima de 40°C é:', options: ['Normal para bebés', 'Perigosa', 'Sinal de saúde', 'Falsa febre'], correct: 1 },
+148|   { question: 'Vacinas funcionam com base em:', options: ['Antibióticos', 'Anticorpos', 'Antídotos', 'Antissépticos'], correct: 1 },
+149|   { question: 'O HIV transmite-se por:', options: ['Abraço', 'Beijo', 'Sangue', 'Ar'], correct: 2 },
+150|   { question: 'Quanto tempo o cérebro fica sem oxigénio antes de danos?', options: ['30 seg', '4-6 min', '15 min', '1 hora'], correct: 1 },
+151|   { question: 'A cegueira noturna está ligada à falta de:', options: ['Vitamina C', 'Vitamina A', 'Vitamina D', 'Vitamina B12'], correct: 1 },
+152|   { question: 'Qual destes órgãos NÃO é parte do sistema digestivo?', options: ['Estômago', 'Pâncreas', 'Pulmão', 'Intestino grosso'], correct: 2 },
+153|   { question: 'A respiração celular produz:', options: ['Oxigénio', 'CO2', 'Azoto', 'Hidrogénio'], correct: 1 },
+154|   { question: 'Quantos rins tem um ser humano saudável?', options: ['1', '2', '3', '4'], correct: 1 },
+155|   { question: 'A pele é considerada um órgão?', options: ['Não', 'Sim', 'Só se estiver doente', 'É um tecido'], correct: 1 },
+156|   { question: 'O que é a pressão arterial sistólica?', options: ['Pressão mínima', 'Pressão máxima', 'Pressão média', 'Pressão venosa'], correct: 1 },
+157|   { question: 'Qual a função da íris nos olhos?', options: ['Ver cores', 'Controlar a luz', 'Focar imagem', 'Produzir lágrimas'], correct: 1 },
+158|   { question: 'Quantos ossos tem o crânio humano?', options: ['8', '14', '22', '30'], correct: 2 },
+159|   { question: 'O que são glóbulos vermelhos?', options: ['Células de defesa', 'Transportam oxigénio', 'Células do cérebro', 'Células da pele'], correct: 1 },
+160|   { question: 'O álcool é classificado como:', options: ['Estimulante', 'Depressor', 'Alucinogénio', 'Nenhum'], correct: 1 },
+161|   { question: 'Quantos batimentos cardíacos por minuto em repouso (adulto)?', options: ['30-40', '60-100', '120-150', '150-200'], correct: 1 },
+162|   { question: 'Qual destes é um mineral essencial para os ossos?', options: ['Ferro', 'Cálcio', 'Potássio', 'Zinco'], correct: 1 },
+163|   { question: 'O diabetes tipo 1 é causado por:', options: ['Muito açúcar', 'Problema autoimune', 'Falta de exercício', 'Stress'], correct: 1 },
+164|   { question: 'A cólera transmite-se principalmente por:', options: ['Ar contaminado', 'Água contaminada', 'Mosquitos', 'Contacto sexual'], correct: 1 },
+165|   { question: 'Qual o maior órgão interno do corpo?', options: ['Coração', 'Fígado', 'Pulmão', 'Estômago'], correct: 1 },
+166|   { question: 'Quantas vértebras tem a coluna humana?', options: ['24', '33', '40', '50'], correct: 1 },
+167|   { question: 'O plasma sanguíneo é constituído maioritariamente por:', options: ['Proteínas', 'Água', 'Gordura', 'Minerais'], correct: 1 },
+168|   { question: 'A miopia é um problema de:', options: ['Ouvido', 'Visão', 'Pele', 'Coração'], correct: 1 },
+169|   { question: 'Qual vitamina é produzida pela exposição ao sol?', options: ['Vitamina A', 'Vitamina B', 'Vitamina C', 'Vitamina D'], correct: 3 },
+170|   { question: 'Quantos dentes de leite tem uma criança?', options: ['16', '20', '24', '28'], correct: 1 },
+171|   { question: 'O que significa PCR (na medicina)?', options: ['Paragem cardíaca', 'Reação em cadeia da polimerase', 'Ressonância', 'Raio-X'], correct: 1 },
+172|   { question: 'Qual destes NÃO é um tipo de hepatite?', options: ['A', 'B', 'C', 'G'], correct: 3 },
+173|   { question: 'O sistema linfático ajuda a:', options: ['Digestão', 'Imunidade', 'Respiração', 'Circulação do sangue'], correct: 1 },
+174|   { question: 'Quantos músculos tem o corpo humano?', options: ['200', '600', '1000', '50'], correct: 1 },
+175|   { question: 'A anafilaxia é:', options: ['Uma doença cardíaca', 'Uma reação alérgica grave', 'Uma fratura', 'Uma infeção'], correct: 1 },
+176|   { question: 'O pâncreas produz:', options: ['Bílis', 'Insulina', 'Suco gástrico', 'Urina'], correct: 1 },
+177|   { question: 'A rinite alérgica afeta principalmente:', options: ['Pele', 'Nariz', 'Olhos', 'Pulmões'], correct: 1 },
+178|   { question: 'O que é a artéria aorta?', options: ['Veia do pescoço', 'Maior artéria do corpo', 'Artéria do braço', 'Artéria da perna'], correct: 1 },
+179|   { question: 'Qual destes é um neurotransmissor?', options: ['Hemoglobina', 'Dopamina', 'Cortisol', 'Insulina'], correct: 1 },
+180|   { question: 'A osteoporose é uma doença que afeta:', options: ['Músculos', 'Ossos', 'Pele', 'Sangue'], correct: 1 },
+181|   { question: 'Quantas câmaras tem o coração humano?', options: ['2', '3', '4', '6'], correct: 2 },
+182|   { question: 'A hemofilia é um distúrbio:', options: ['Imune', 'Da coagulação', 'Cardíaco', 'Respiratório'], correct: 1 },
+183| ]
+184| 
+185| // BÍBLIA - perguntas de rasteira
+186| export const bibleQuestions: Question[] = [
+187|   { question: 'Quantos dias Deus levou para criar o mundo?', options: ['7 dias', '6 dias', '5 dias', '10 di
+
+[Output truncated: 21576 chars omitted]
+</content>

@@ -1,0 +1,106 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+371|   const resistanceProgress = phase === 'normal'
+372|     ? Math.min(100, (elapsed / BASE_MS) * 100)
+373|     : 100
+374|   const bonusProgress = phase === 'bonus'
+375|     ? Math.min(100, (elapsed / BONUS_TARGET_MS) * 100)
+376|     : 0
+377| 
+378| 
+379|   return (
+380|     <div className="mais-gradient h-dvh w-full flex flex-col relative overflow-hidden min-h-0">
+381|       {showCapitalPrompt && (
+382|         <Dialog open={showCapitalPrompt} onOpenChange={(open) => {
+383|           if (!open && session === null) {
+384|             initSession(1000)
+385|           }
+386|         }}>
+387|           <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+388|             <DialogHeader>
+389|               <DialogTitle className="text-center text-xl currency-bling">
+390|                 💰 CAPITAL INICIAL
+391|               </DialogTitle>
+392|               <DialogDescription className="text-center text-zinc-400">
+393|                 Insira o capital inicial para começar o balanço diário
+394|               </DialogDescription>
+395|             </DialogHeader>
+396|             <CapitalPromptInline onConfirm={initSession} />
+397|           </DialogContent>
+398|         </Dialog>
+399|       )}
+400| 
+401|       {/* Background glow */}
+402|       {gameState === 'playing' && (
+403|         <div
+404|           className="absolute inset-0 pointer-events-none"
+405|           style={{
+406|             background: `radial-gradient(circle at 50% 50%, rgba(212,160,23,${0.03 + (elapsed / BASE_MS) * 0.12}) 0%, transparent 70%)`,
+407|           }}
+408|         />
+409|       )}
+410|       {gameState === 'bonus_won' && (
+411|         <div
+412|           className="absolute inset-0 pointer-events-none"
+413|           style={{
+414|             background: 'radial-gradient(circle at 50% 50%, rgba(255,107,53,0.25) 0%, transparent 70%)',
+415|           }}
+416|         />
+417|       )}
+418| 
+419|       {/* Floating emoji particles */}
+420|       {gameState === 'playing' && (
+421|         <EmojiParticles emojis={STRENGTH_EMOJIS} count={5} />
+422|       )}
+423| 
+424|       {/* Header */}
+425|       <div className="flex-none w-full">
+426|         {/* Title */}
+427|         <div className="text-center mb-1">
+428|           <h1 className="text-3xl sm:text-4xl font-black tracking-[0.15em]" style={{ color: 'var(--mais-gold)' }}>
+429|             +MAIS <span style={{ color: '#C0C0C0' }}>POWER</span>
+430|           </h1>
+431|           <p className="text-[10px] text-zinc-600 tracking-[0.3em] uppercase mt-0.5">
+432|             {gameConfig.tagline}
+433|           </p>
+434|         </div>
+435| 
+436|         {/* Tab Navigation */}
+437|         <div className="tab-nav">
+438|           <button
+439|             className={`tab-btn ${tab === 'game' ? 'tab-active' : ''}`}
+440|             onClick={() => setTab('game')}
+441|           >
+442|             <Gamepad2 className="w-5 h-5" />
+443|             JOGO
+444|           </button>
+445|           <button
+446|             className={`tab-btn ${tab === 'balance' ? 'tab-active' : ''}`}
+447|             onClick={() => setTab('balance')}
+448|           >
+449|             <BarChart3 className="w-5 h-5" />
+450|             BALANÇO
+451|           </button>
+452|         </div>
+453|       </div>
+454| 
+455|       {/* ===== GAME TAB ===== */}
+456|       {tab === 'game' && (
+457|         <div className="flex flex-col items-center gap-2 z-10 flex-1 justify-center w-full max-w-lg mx-auto px-4 min-h-0">
+458|           {/* Status + Timer */}
+459|           <div className="text-center">
+460|             <div className={`text-sm font-bold uppercase tracking-[0.2em] ${
+461|               gameState === 'playing' ? 'text-zinc-400' :
+462|               gameState === 'won' ? 'text-green-400' :
+463|               gameState === 'bonus_won' ? 'text-orange-400' :
+464|               gameState === 'lost' ? 'text-red-600' : 'text-zinc-500'
+465|             }`}>
+466|               {gameState === 'idle' && messages.idle}
+467|               {gameState === 'playing' && (phase === 'bonus' ? '🔥 BÓNUS ATIVO!' : messages.holding)}
+468|               {gameState === 'won' && messages.won}
+469|               {gameState === 'bonus_won' && '🎁 BÓNUS GANHO! 🔥'}
+470|               {gameState === 'lost' && messages.lost}
+
+[Showing lines 371-470 of 988. Use offset=470 to continue.]
+</content>

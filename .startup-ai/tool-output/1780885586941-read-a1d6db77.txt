@@ -1,0 +1,106 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+811|                   setLastAnswerCorrect(null)
+812|                   setCurrentQuestion(null)
+813|                 }}
+814|                 className="w-full font-bold py-3 text-sm mt-1"
+815|                 style={{ background: 'transparent', color: '#666', border: '1px solid #333' }}
+816|               >
+817|                 ← Voltar
+818|               </Button>
+819|             </div>
+820|           )}
+821|         </DialogContent>
+822|       </Dialog>
+823| 
+824|       {/* ===== QUESTION DIALOG: Result ===== */}
+825|       <Dialog open={questionPhase === 'result'} onOpenChange={(open) => {
+826|         if (!open) {
+827|           setQuestionPhase('hidden')
+828|           setTimeReduced(false)
+829|           setLastAnswerCorrect(null)
+830|           setCurrentQuestion(null)
+831|         }
+832|       }}>
+833|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+834|           <DialogHeader>
+835|             <DialogTitle className="text-center text-xl">
+836|               {lastAnswerCorrect ? (
+837|                 <span style={{ color: '#30d158' }}>✅ ACERTOU!</span>
+838|               ) : (
+839|                 <span className="text-red-500">❌ ERROU!</span>
+840|               )}
+841|             </DialogTitle>
+842|           </DialogHeader>
+843|           <div className="flex flex-col items-center gap-3 mt-1">
+844|             {lastAnswerCorrect ? (
+845|               <>
+846|                 <div className="flex items-center gap-2">
+847|                   <Zap className="w-6 h-6" style={{ color: 'var(--mais-gold)' }} />
+848|                   <span className="text-lg font-bold" style={{ color: 'var(--mais-gold)' }}>
+849|                     Vai fazer 2:30s! ⚡
+850|                   </span>
+851|                 </div>
+852|                 <p className="text-zinc-400 text-sm text-center">
+853|                   Resposta correta! Tempo reduzido 💪
+854|                 </p>
+855|               </>
+856|             ) : (
+857|               <>
+858|                 <div className="text-lg font-bold text-zinc-300 text-center">
+859|                   Vai fazer 3:00
+860|                 </div>
+861|                 <div className="bg-zinc-900 rounded-xl px-4 py-3 text-center w-full">
+862|                   <p className="text-xs text-zinc-500 mb-1">RESPOSTA CORRETA:</p>
+863|                   <p className="text-lg font-bold" style={{ color: 'var(--mais-gold)' }}>
+864|                     {lastCorrectAnswerText}
+865|                   </p>
+866|                 </div>
+867|                 <p className="text-zinc-500 text-sm text-center">
+868|                   Na próxima acertas! 💪🏾
+869|                 </p>
+870|               </>
+871|             )}
+872|             <button
+873|               onClick={startAfterQuestion}
+874|               className="start-btn mt-2 w-full"
+875|               style={{ touchAction: 'manipulation' }}
+876|             >
+877|               <Play className="w-5 h-5" />
+878|               INICIAR JOGO
+879|             </button>
+880|             <button
+881|               onClick={() => {
+882|                 setQuestionPhase('hidden')
+883|                 setTimeReduced(false)
+884|                 setLastAnswerCorrect(null)
+885|                 setCurrentQuestion(null)
+886|               }}
+887|               className="w-full py-3 rounded-xl font-bold text-sm mt-1"
+888|               style={{ background: 'transparent', color: '#666', border: '1px solid #333', touchAction: 'manipulation' }}
+889|             >
+890|               Cancelar
+891|             </button>
+892|           </div>
+893|         </DialogContent>
+894|       </Dialog>
+895| 
+896|       {/* ===== RESULT DIALOG ===== */}
+897|       <Dialog open={showResult} onOpenChange={() => {}}>
+898|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+899|           <DialogHeader>
+900|             {(gameState === 'won' || gameState === 'bonus_won') ? (
+901|               <DialogTitle className="text-center">
+902|                 <div className="text-5xl font-black mb-2" style={{ color: '#30d158' }}>
+903|                   🏆 VITÓRIA!
+904|                 </div>
+905|                 <EmojiParticles emojis={WIN_EMOJIS} count={6} />
+906|               </DialogTitle>
+907|             ) : (
+908|               <DialogTitle className="text-center">
+909|                 <div className="text-5xl font-black mb-2 text-red-600">
+910|                   💀 DERROTA!
+
+[Showing lines 811-910 of 988. Use offset=910 to continue.]
+</content>

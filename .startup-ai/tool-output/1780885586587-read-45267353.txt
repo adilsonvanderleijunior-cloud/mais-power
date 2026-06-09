@@ -1,0 +1,206 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+171|   const [elapsed, setElapsed] = useState(0)
+172|   const [showResult, setShowResult] = useState(false)
+173|   const [tab, setTab] = useState<Tab>('game')
+174|   const [timeReduced, setTimeReduced] = useState(false)
+175|   const [phase, setPhase] = useState<'normal' | 'bonus'>('normal')
+176|   const [gripPressed, setGripPressed] = useState(false)
+177|   const [lostInBonus, setLostInBonus] = useState(false)
+178| 
+179|   // Question states
+180|   const [questionPhase, setQuestionPhase] = useState<QuestionPhase>('hidden')
+181|   const [questionCategory, setQuestionCategory] = useState<QuestionCategory>('math')
+182|   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+183|   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | null>(null)
+184|   const [lastCorrectAnswerText, setLastCorrectAnswerText] = useState('')
+185| 
+186|   const { session, showCapitalPrompt, initSession, recordResult, resetSession } = useSession()
+187| 
+188|   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+189|   const startTimeRef = useRef(0)
+190|   const bonusStartRef = useRef(0)
+191| 
+192|   const BASE_MS = timeReduced ? 150000 : gameConfig.holdDuration * 1000
+193|   const winAmount = bet * gameConfig.multiplier
+194|   const bonusAmountExtra = gameConfig.bonusAmount
+195|   const STRENGTH_MS = 30000
+196|   const BONUS_TARGET_MS = (gameConfig.bonusDuration - gameConfig.holdDuration) * 1000
+197|   const showBonus = bet >= gameConfig.bonusThreshold
+198| 
+199|   const stopTimer = useCallback(() => {
+200|     if (timerRef.current) {
+201|       clearInterval(timerRef.current)
+202|       timerRef.current = null
+203|     }
+204|   }, [])
+205| 
+206|   const handleWin = useCallback((withBonus: boolean = false) => {
+207|     stopTimer()
+208|     setGameState(withBonus ? 'bonus_won' : 'won')
+209|     const payout = withBonus ? winAmount + bonusAmountExtra : winAmount
+210|     recordResult(true, bet, payout)
+211|     setGripPressed(false)
+212|     setTimeout(() => setShowResult(true), 600)
+213|   }, [stopTimer, recordResult, bet, winAmount, bonusAmountExtra])
+214| 
+215|   const handleLoss = useCallback(() => {
+216|     setLostInBonus(phase === 'bonus')
+217|     stopTimer()
+218|     setGameState('lost')
+219|     recordResult(false, bet, 0)
+220|     setGripPressed(false)
+221|     setPhase('normal')
+222|     setTimeout(() => setShowResult(true), 400)
+223|   }, [stopTimer, recordResult, bet, phase])
+224| 
+225|   const startGame = useCallback(() => {
+226|     startTimeRef.current = Date.now()
+227|     setElapsed(0)
+228|     setPhase('normal')
+229|     setGripPressed(true)
+230|     setGameState('playing')
+231|     setShowResult(false)
+232|   }, [])
+233| 
+234|   // Start the game directly from idle (no question)
+235|   const startDirect = useCallback(() => {
+236|     // Reset any question state
+237|     setQuestionPhase('hidden')
+238|     setCurrentQuestion(null)
+239|     setLastAnswerCorrect(null)
+240|     startGame()
+241|   }, [startGame])
+242| 
+243|   // Start the game after answering a question
+244|   const startAfterQuestion = useCallback(() => {
+245|     setQuestionPhase('hidden')
+246|     setCurrentQuestion(null)
+247|     setLastAnswerCorrect(null)
+248|     startGame()
+249|   }, [startGame])
+250| 
+251|   // Open question flow: choose category
+252|   const openQuestionFlow = useCallback(() => {
+253|     setQuestionPhase('category')
+254|   }, [])
+255| 
+256|   // Choose category
+257|   const chooseCategory = useCallback((cat: QuestionCategory) => {
+258|     setQuestionCategory(cat)
+259|     const pool =
+260|       cat === 'math' ? mathQuestions :
+261|       cat === 'general' ? generalQuestions :
+262|       cat === 'saude' ? saudeQuestions :
+263|       cat === 'biblia' ? bibleQuestions :
+264|       cat === 'logica' ? logicaQuestions :
+265|       portuguesQuestions
+266|     const q = pool[Math.floor(Math.random() * pool.length)]
+267|     setCurrentQuestion(q)
+268|     setLastAnswerCorrect(null)
+269|     setQuestionPhase('answering')
+270|   }, [])
+271| 
+272|   // Answer a question
+273|   const handleAnswer = useCallback((answerIdx: number) => {
+274|     if (!currentQuestion) return
+275|     const correct = answerIdx === currentQuestion.correct
+276|     setLastAnswerCorrect(correct)
+277|     setLastCorrectAnswerText(currentQuestion.options[currentQuestion.correct])
+278|     setTimeReduced(correct)
+279|     setQuestionPhase('result')
+280|   }, [currentQuestion])
+281| 
+282|   const onPress = useCallback(() => {
+283|     if (gameState === 'playing') {
+284|       setGripPressed(true)
+285|     }
+286|     // In idle, Apertado is handled by startDirect or openQuestionFlow separately
+287|   }, [gameState])
+288| 
+289|   const onRelease = useCallback(() => {
+290|     if (gameState === 'playing' && gripPressed) {
+291|       setGripPressed(false)
+292|       handleLoss()
+293|     }
+294|   }, [gameState, gripPressed, handleLoss])
+295| 
+296|   useEffect(() => {
+297|     if (gameState !== 'playing') return
+298| 
+299|     timerRef.current = setInterval(() => {
+300|       const now = Date.now()
+301|       const e = now - startTimeRef.current
+302|       setElapsed(e)
+303| 
+304|       if (phase === 'normal') {
+305|         if (e >= BASE_MS) {
+306|           stopTimer()
+307|           if (showBonus) {
+308|             setPhase('bonus')
+309|             bonusStartRef.current = now
+310|             setElapsed(0)
+311|           } else {
+312|             handleWin(false)
+313|           }
+314|         }
+315|       } else if (phase === 'bonus') {
+316|         const bonusE = now - bonusStartRef.current
+317|         setElapsed(bonusE)
+318|         if (bonusE >= BONUS_TARGET_MS) {
+319|           handleWin(true)
+320|         }
+321|       }
+322|     }, 33)
+323| 
+324|     return () => stopTimer()
+325|   }, [gameState, phase, BASE_MS, showBonus, handleWin, stopTimer, BONUS_TARGET_MS])
+326| 
+327|   useEffect(() => {
+328|     const onDown = (e: KeyboardEvent) => {
+329|       if (e.code === 'Space' || e.code === 'Enter') {
+330|         e.preventDefault()
+331|         onPress()
+332|       }
+333|     }
+334|     const onUp = (e: KeyboardEvent) => {
+335|       if (e.code === 'Space' || e.code === 'Enter') {
+336|         e.preventDefault()
+337|         onRelease()
+338|       }
+339|     }
+340|     window.addEventListener('keydown', onDown)
+341|     window.addEventListener('keyup', onUp)
+342|     return () => {
+343|       window.removeEventListener('keydown', onDown)
+344|       window.removeEventListener('keyup', onUp)
+345|     }
+346|   }, [onPress, onRelease])
+347| 
+348|   const resetGame = () => {
+349|     setGameState('idle')
+350|     setElapsed(0)
+351|     setShowResult(false)
+352|     setPhase('normal')
+353|     setGripPressed(false)
+354|     setLostInBonus(false)
+355|     setTimeReduced(false)
+356|     setQuestionPhase('hidden')
+357|     setCurrentQuestion(null)
+358|     setLastAnswerCorrect(null)
+359|     stopTimer()
+360|   }
+361| 
+362|   // Display timer: show total elapsed from game start (including bonus phase)
+363|   const totalElapsed = phase === 'normal' ? elapsed : BASE_MS + elapsed
+364|   const displayTime = Math.min(totalElapsed, BASE_MS + BONUS_TARGET_MS)
+365| 
+366|   const isUrgent = phase === 'normal'
+367|     ? elapsed >= BASE_MS - 10000
+368|     : elapsed >= BONUS_TARGET_MS - 10000
+369| 
+370|   const strengthProgress = Math.min(100, (elapsed / STRENGTH_MS) * 100)
+
+[Showing lines 171-370 of 988. Use offset=370 to continue.]
+</content>

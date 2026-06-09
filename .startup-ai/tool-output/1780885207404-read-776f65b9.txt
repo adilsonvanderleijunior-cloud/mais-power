@@ -1,0 +1,241 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+  1| import { useState, useRef, useEffect, useCallback } from 'react'
+  2| import { gameConfig, messages, type Question, mathQuestions, generalQuestions } from '../data/siteContent'
+  3| import { Button } from '../components/ui/button'
+  4| import {
+  5|   Dialog,
+  6|   DialogContent,
+  7|   DialogHeader,
+  8|   DialogTitle,
+  9|   DialogDescription,
+ 10| } from '../components/ui/dialog'
+ 11| import { ArrowRight, BarChart3, Gamepad2, Zap, HelpCircle, Gift, BookOpen, Play, Brain } from 'lucide-react'
+ 12| import BalanceDashboard, { useSession } from '../components/BalanceDashboard'
+ 13| 
+ 14| type GameState = 'idle' | 'playing' | 'won' | 'lost' | 'bonus_won'
+ 15| type Tab = 'game' | 'balance'
+ 16| type QuestionPhase = 'hidden' | 'category' | 'answering' | 'result'
+ 17| type QuestionCategory = 'math' | 'general'
+ 18| 
+ 19| function formatTime(ms: number): string {
+ 20|   const m = Math.floor(ms / 60000)
+ 21|   const s = Math.floor((ms % 60000) / 1000)
+ 22|   const cs = Math.floor((ms % 1000) / 10)
+ 23|   return `${m}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`
+ 24| }
+ 25| 
+ 26| const STRENGTH_EMOJIS = ['💪', '🔥', '⚡']
+ 27| const WIN_EMOJIS = ['🏆', '🔥', '💪', '🎉', '👑']
+ 28| 
+ 29| function HandGrip({ state }: { state: GameState }) {
+ 30|   const isPlaying = state === 'playing'
+ 31|   const isWon = state === 'won' || state === 'bonus_won'
+ 32|   const isLost = state === 'lost'
+ 33| 
+ 34|   return (
+ 35|     <div className="grip-wrapper">
+ 36|       {isPlaying && <div className="squeeze-glow" />}
+ 37|       {isPlaying && <div className="grip-ring" />}
+ 38|       {state === 'bonus_won' && <div className="bonus-glow" />}
+ 39| 
+ 40|       <div className={`grip-3d ${isPlaying ? 'holding' : isWon ? '' : 'idle'}`}>
+ 41|         <svg
+ 42|           viewBox="0 0 160 240"
+ 43|           className={`grip-svg w-full h-full ${isPlaying ? 'squeezed' : ''} ${isWon ? 'grip-won-glow' : ''}`}
+ 44|         >
+ 45|           <defs>
+ 46|             <linearGradient id="gripGold" x1="0" y1="0" x2="0" y2="1">
+ 47|               <stop offset="0%" stopColor="#E8C84A" />
+ 48|               <stop offset="50%" stopColor="#D4A017" />
+ 49|               <stop offset="100%" stopColor="#B8860B" />
+ 50|             </linearGradient>
+ 51|             <linearGradient id="gripSilver" x1="0" y1="0" x2="1" y2="0">
+ 52|               <stop offset="0%" stopColor="#999" />
+ 53|               <stop offset="50%" stopColor="#C0C0C0" />
+ 54|               <stop offset="100%" stopColor="#999" />
+ 55|             </linearGradient>
+ 56|             <linearGradient id="gripRubber" x1="0" y1="0" x2="0" y2="1">
+ 57|               <stop offset="0%" stopColor="#3a3a3a" />
+ 58|               <stop offset="50%" stopColor="#222" />
+ 59|               <stop offset="100%" stopColor="#1a1a1a" />
+ 60|             </linearGradient>
+ 61|             <linearGradient id="gripWon" x1="0" y1="0" x2="0" y2="1">
+ 62|               <stop offset="0%" stopColor="#30d158" />
+ 63|               <stop offset="100%" stopColor="#1a9a3a" />
+ 64|             </linearGradient>
+ 65|             <linearGradient id="gripBonus" x1="0" y1="0" x2="0" y2="1">
+ 66|               <stop offset="0%" stopColor="#ff6b35" />
+ 67|               <stop offset="100%" stopColor="#e05530" />
+ 68|             </linearGradient>
+ 69|             <filter id="gripGlow">
+ 70|               <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#D4A017" floodOpacity="0.6" />
+ 71|             </filter>
+ 72|             <filter id="gripGlowWon">
+ 73|               <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#30d158" floodOpacity="0.6" />
+ 74|             </filter>
+ 75|             <filter id="gripGlowBonus">
+ 76|               <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#ff6b35" floodOpacity="0.7" />
+ 77|             </filter>
+ 78|           </defs>
+ 79| 
+ 80|           {/* UPPER HANDLE */}
+ 81|           <g className="grip-upper" filter={isWon ? 'url(#gripGlowWon)' : isPlaying ? 'url(#gripGlow)' : undefined}>
+ 82|             <rect x="32" y="8" width="96" height="32" rx="16" fill="url(#gripRubber)" stroke={isWon ? 'url(#gripWon)' : 'url(#gripSilver)'} strokeWidth="2" />
+ 83|             <line x1="45" y1="16" x2="45" y2="32" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 84|             <line x1="55" y1="14" x2="55" y2="34" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 85|             <line x1="65" y1="16" x2="65" y2="32" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 86|             <line x1="75" y1="14" x2="75" y2="34" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 87|             <line x1="85" y1="16" x2="85" y2="32" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 88|             <line x1="95" y1="14" x2="95" y2="34" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 89|             <line x1="105" y1="16" x2="105" y2="32" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 90|             <line x1="115" y1="14" x2="115" y2="34" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+ 91|             <path d="M 80 40 L 80 70" stroke="url(#gripGold)" strokeWidth="12" strokeLinecap="round" />
+ 92|           </g>
+ 93| 
+ 94|           {/* SPRING COIL */}
+ 95|           <g className="grip-spring">
+ 96|             {isPlaying ? (
+ 97|               <path d="M 80 70 L 71 78 L 89 86 L 71 94 L 89 102 L 71 110 L 80 118" stroke="#D4A017" strokeWidth="4.5" fill="none" strokeLinecap="round" strokeLinejoin="round" filter="url(#gripGlow)" />
+ 98|             ) : (
+ 99|               <path d="M 80 70 L 70 76 L 90 84 L 70 92 L 90 100 L 70 108 L 90 116 L 80 122" stroke="#D4A017" strokeWidth="3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
+100|             )}
+101|           </g>
+102| 
+103|           {/* LOWER HANDLE */}
+104|           <g filter={isWon ? 'url(#gripGlowWon)' : undefined}>
+105|             <path d="M 80 122 L 80 195" stroke="url(#gripGold)" strokeWidth="12" strokeLinecap="round" />
+106|             <rect x="32" y="195" width="96" height="32" rx="16" fill="url(#gripRubber)" stroke={isWon ? 'url(#gripWon)' : 'url(#gripSilver)'} strokeWidth="2" />
+107|             <line x1="45" y1="203" x2="45" y2="219" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+108|             <line x1="55" y1="201" x2="55" y2="221" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+109|             <line x1="65" y1="203" x2="65" y2="219" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+110|             <line x1="75" y1="201" x2="75" y2="221" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+111|             <line x1="85" y1="203" x2="85" y2="219" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+112|             <line x1="95" y1="201" x2="95" y2="219" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+113|             <line x1="105" y1="203" x2="105" y2="219" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+114|             <line x1="115" y1="201" x2="115" y2="219" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
+115|           </g>
+116| 
+117|           {isWon && (
+118|             <g>
+119|               <rect x="10" y="10" width="140" height="220" rx="20" fill="rgba(48, 209, 88, 0.08)" />
+120|               <text x="80" y="120" textAnchor="middle" fill="#30d158" fontSize="16" fontWeight="bold" filter="url(#gripGlowWon)">🏆 VITÓRIA 🏆</text>
+121|               {state === 'bonus_won' && (
+122|                 <text x="80" y="144" textAnchor="middle" fill="#ff6b35" fontSize="12" fontWeight="bold" filter="url(#gripGlowBonus)">+ BÓNUS 🎁</text>
+123|               )}
+124|             </g>
+125|           )}
+126| 
+127|           {isLost && (
+128|             <g opacity="0.4">
+129|               <rect x="10" y="10" width="140" height="220" rx="20" fill="rgba(180, 0, 0, 0.15)" />
+130|             </g>
+131|           )}
+132|         </svg>
+133|       </div>
+134|     </div>
+135|   )
+136| }
+137| 
+138| const PARTICLE_POSITIONS = [
+139|   { left: 22, top: 40 }, { left: 65, top: 35 }, { left: 40, top: 55 },
+140|   { left: 78, top: 50 }, { left: 30, top: 60 }, { left: 55, top: 42 },
+141|   { left: 70, top: 58 }, { left: 48, top: 62 },
+142| ]
+143| 
+144| function EmojiParticles({ emojis, count = 4 }: { emojis: string[]; count?: number }) {
+145|   return (
+146|     <>
+147|       {Array.from({ length: count }).map((_, i) => {
+148|         const pos = PARTICLE_POSITIONS[i % PARTICLE_POSITIONS.length]
+149|         return (
+150|           <span
+151|             key={i}
+152|             className="emoji-particle"
+153|             style={{
+154|               left: `${pos.left}%`,
+155|               top: `${pos.top}%`,
+156|               animationDelay: `${i * 0.3}s`,
+157|               animationDuration: `${1.8 + (i * 0.17)}s`,
+158|             }}
+159|           >
+160|             {emojis[i % emojis.length]}
+161|           </span>
+162|         )
+163|       })}
+164|     </>
+165|   )
+166| }
+167| 
+168| export default function Index() {
+169|   const [gameState, setGameState] = useState<GameState>('idle')
+170|   const [bet, setBet] = useState(gameConfig.defaultBet)
+171|   const [elapsed, setElapsed] = useState(0)
+172|   const [showResult, setShowResult] = useState(false)
+173|   const [tab, setTab] = useState<Tab>('game')
+174|   const [timeReduced, setTimeReduced] = useState(false)
+175|   const [phase, setPhase] = useState<'normal' | 'bonus'>('normal')
+176|   const [gripPressed, setGripPressed] = useState(false)
+177|   const [lostInBonus, setLostInBonus] = useState(false)
+178| 
+179|   // Question states
+180|   const [questionPhase, setQuestionPhase] = useState<QuestionPhase>('hidden')
+181|   const [questionCategory, setQuestionCategory] = useState<QuestionCategory>('math')
+182|   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+183|   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | null>(null)
+184|   const [lastCorrectAnswerText, setLastCorrectAnswerText] = useState('')
+185| 
+186|   const { session, showCapitalPrompt, initSession, recordResult, resetSession } = useSession()
+187| 
+188|   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+189|   const startTimeRef = useRef(0)
+190|   const bonusStartRef = useRef(0)
+191| 
+192|   const BASE_MS = timeReduced ? 150000 : gameConfig.holdDuration * 1000
+193|   const winAmount = bet * gameConfig.multiplier
+194|   const bonusAmountExtra = gameConfig.bonusAmount
+195|   const STRENGTH_MS = 30000
+196|   const BONUS_TARGET_MS = (gameConfig.bonusDuration - gameConfig.holdDuration) * 1000
+197|   const showBonus = bet >= gameConfig.bonusThreshold
+198| 
+199|   const stopTimer = useCallback(() => {
+200|     if (timerRef.current) {
+201|       clearInterval(timerRef.current)
+202|       timerRef.current = null
+203|     }
+204|   }, [])
+205| 
+206|   const handleWin = useCallback((withBonus: boolean = false) => {
+207|     stopTimer()
+208|     setGameState(withBonus ? 'bonus_won' : 'won')
+209|     const payout = withBonus ? winAmount + bonusAmountExtra : winAmount
+210|     recordResult(true, bet, payout)
+211|     setGripPressed(false)
+212|     setTimeout(() => setShowResult(true), 600)
+213|   }, [stopTimer, recordResult, bet, winAmount, bonusAmountExtra])
+214| 
+215|   const handleLoss = useCallback(() => {
+216|     setLostInBonus(phase === 'bonus')
+217|     stopTimer()
+218|     setGameState('lost')
+219|     recordResult(false, bet, 0)
+220|     setGripPressed(false)
+221|     setPhase('normal')
+222|     setTimeout(() => setShowResult(true), 400)
+223|   }, [stopTimer, recordResult, bet, phase])
+224| 
+225|   const startGame = useCallback(() => {
+226|     startTimeRef.current = Date.now()
+227|     setElapsed(0)
+228|     setPhase('normal')
+229|     setGripPressed(true)
+230|     setGameState('playing')
+231|     setShowResult(false)
+232|   }, [])
+233| 
+234|   // Start the game directly from idle (no question)
+235|   const startDirect = useCallback((
+
+[Output truncated: 10490 chars omitted]
+</content>

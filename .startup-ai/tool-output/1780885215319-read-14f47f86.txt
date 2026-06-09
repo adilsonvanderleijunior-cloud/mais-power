@@ -1,0 +1,259 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+528|           {/* BARS */}
+529|           {gameState === 'playing' && (
+530|             <div className="w-full flex flex-col gap-2 mt-1">
+531|               <div className="bar-strength">
+532|                 <div className="bar-label text-sm">
+533|                   <span style={{ color: 'var(--mais-strength)' }}>💪 FORÇA</span>
+534|                   <span className="text-zinc-500">{strengthProgress.toFixed(0)}%</span>
+535|                 </div>
+536|                 <div className="bar-track">
+537|                   <div
+538|                     className={`bar-fill ${strengthProgress >= 100 ? 'strength-throb' : ''}`}
+539|                     style={{ width: `${strengthProgress}%` }}
+540|                   />
+541|                 </div>
+542|               </div>
+543| 
+544|               {phase === 'normal' && (
+545|                 <div className="bar-resistance">
+546|                   <div className="bar-label text-sm">
+547|                     <span style={{ color: 'var(--mais-gold)' }}>🛡️ RESISTÊNCIA</span>
+548|                     <span className="text-zinc-500">{resistanceProgress.toFixed(0)}%</span>
+549|                   </div>
+550|                   <div className="bar-track">
+551|                     <div
+552|                       className={`bar-fill ${resistanceProgress >= 100 ? 'resistance-throb' : ''}`}
+553|                       style={{ width: `${resistanceProgress}%` }}
+554|                     />
+555|                   </div>
+556|                 </div>
+557|               )}
+558| 
+559|               {/* Bonus bar */}
+560|               {showBonus && phase === 'bonus' && (
+561|                 <div className="bar-bonus">
+562|                   <div className="bar-label text-sm">
+563|                     <span style={{ color: '#ff6b35' }}>🎁 BÓNUS</span>
+564|                     <span className="text-orange-400">{bonusProgress.toFixed(0)}%</span>
+565|                   </div>
+566|                   <div className="bar-track bonus-track">
+567|                     <div
+568|                       className={`bar-fill bonus-fill ${bonusProgress >= 100 ? 'bonus-throb' : ''}`}
+569|                       style={{ width: `${bonusProgress}%` }}
+570|                     />
+571|                   </div>
+572|                 </div>
+573|               )}
+574|             </div>
+575|           )}
+576| 
+577|           {/* Bet area - idle state */}
+578|           {gameState === 'idle' && (
+579|             <div className="flex flex-col items-center gap-2 mt-2">
+580|               <label className="text-xs text-zinc-500 uppercase tracking-[0.2em] font-bold">
+581|                 💰 Valor da aposta
+582|               </label>
+583|               <div className="flex items-center gap-2">
+584|                 <span className="text-2xl font-bold currency-silver">Kz</span>
+585|                 <input
+586|                   type="number"
+587|                   min={gameConfig.minBet}
+588|                   max={gameConfig.maxBet}
+589|                   value={bet}
+590|                   onChange={(e) => setBet(Math.max(gameConfig.minBet, Math.min(gameConfig.maxBet, Number(e.target.value) || gameConfig.minBet)))}
+591|                   className="bet-input bg-transparent bet-input-responsive font-black text-white text-center w-full max-w-[200px] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+592|                 />
+593|               </div>
+594|               <div className="flex items-center gap-2 text-zinc-600 text-xs">
+595|                 <span>min Kz {gameConfig.minBet.toLocaleString('pt-AO')}</span>
+596|                 <span className="text-zinc-700">•</span>
+597|                 <span>max Kz {gameConfig.maxBet.toLocaleString('pt-AO')}</span>
+598|               </div>
+599| 
+600|               {/* Bonus indicator */}
+601|               {bet >= gameConfig.bonusThreshold && (
+602|                 <div className="bonus-indicator mt-1">
+603|                   <Gift className="w-4 h-4" />
+604|                   <span>BÓNUS DISPONÍVEL: +Kz {gameConfig.bonusAmount.toLocaleString('pt-AO')} até 5:30</span>
+605|                 </div>
+606|               )}
+607| 
+608|               {/* Time display (shows if reduced by question) */}
+609|               {timeReduced && (
+610|                 <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: '#30d158' }}>
+611|                   <Zap className="w-3.5 h-3.5" />
+612|                   <span>⚡ Tempo reduzido: 2:30</span>
+613|                 </div>
+614|               )}
+615| 
+616|               {/* Action buttons row */}
+617|               <div className="flex gap-3 mt-3 w-full">
+618|                 <button
+619|                   onClick={startDirect}
+620|                   className="start-btn flex-1 py-3 sm:py-4 text-sm sm:text-base"
+621|                   style={{ touchAction: 'manipulation' }}
+622|                 >
+623|                   <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6" />
+624|                   APERTADO 💪
+625|                 </button>
+626|                 <button
+627|                   onClick={openQuestionFlow}
+628|                   className="question-btn flex-1 py-3 sm:py-4 text-sm sm:text-base"
+629|                   style={{ touchAction: 'manipulation' }}
+630|                 >
+631|                   <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+632|                   PERGUNTA?
+633|                 </button>
+634|               </div>
+635|             </div>
+636|           )}
+637| 
+638|           {/* Prize display */}
+639|           {(gameState === 'playing' || gameState === 'won' || gameState === 'bonus_won') && (
+640|             <div className="text-center mt-1">
+641|               <div className="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-0.5 font-bold">
+642|                 🏆 Prémio
+643|               </div>
+644|               <div className={`text-3xl font-black ${
+645|                 gameState === 'bonus_won' ? 'text-orange-400' : 'currency-bling'
+646|               }`}>
+647|                 Kz {winAmount.toLocaleString('pt-AO')}
+648|               </div>
+649|               {phase === 'bonus' && (
+650|                 <div className="text-xl font-black text-orange-400 mt-0.5">
+651|                   + BÓNUS Kz {bonusAmountExtra.toLocaleString('pt-AO')}
+652|                 </div>
+653|               )}
+654|               {gameState === 'bonus_won' && (
+655|                 <div className="text-lg font-black text-orange-400 mt-0.5">
+656|                   🎁 +Kz {bonusAmountExtra.toLocaleString('pt-AO')}
+657|                 </div>
+658|               )}
+659|             </div>
+660|           )}
+661|         </div>
+662|       )}
+663| 
+664|       {/* ===== BALANCE TAB ===== */}
+665|       {tab === 'balance' && (
+666|         <div className="z-10 flex-1 overflow-y-auto px-4 py-2 w-full max-w-lg mx-auto">
+667|           <BalanceDashboard
+668|             session={session}
+669|             onReset={resetSession}
+670|           />
+671|         </div>
+672|       )}
+673| 
+674|       {/* ===== QUESTION DIALOG: Category Choice ===== */}
+675|       <Dialog open={questionPhase === 'category'} onOpenChange={(open) => {
+676|         if (!open) {
+677|           setQuestionPhase('hidden')
+678|           setTimeReduced(false)
+679|           setLastAnswerCorrect(null)
+680|           setCurrentQuestion(null)
+681|         }
+682|       }}>
+683|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+684|             <DialogHeader>
+685|               <DialogTitle className="text-center text-xl currency-bling">
+686|                 ❓ ESCOLHA A CATEGORIA
+687|             </DialogTitle>
+688|             <DialogDescription className="text-center text-zinc-400">
+689|               Se acertar, o tempo reduz para 2:30 ⚡<br />
+690|               Se errar, mantém 3:00
+691|             </DialogDescription>
+692|           </DialogHeader>
+693|           <div className="flex flex-col gap-3 mt-2">
+694|             <button
+695|               onClick={() => chooseCategory('math')}
+696|               className="category-btn"
+697|             >
+698|               <Brain className="w-6 h-6" />
+699|               <div className="text-left">
+700|                 <div className="text-lg font-bold">MATEMÁTICA</div>
+701|                 <div className="text-xs text-zinc-400">contas de rasteira 🧮</div>
+702|               </div>
+703|             </button>
+704|             <button
+705|               onClick={() => chooseCategory('general')}
+706|               className="category-btn"
+707|             >
+708|               <BookOpen className="w-6 h-6" />
+709|               <div className="text-left">
+710|                 <div className="text-lg font-bold">CULTURA GERAL</div>
+711|                 <div className="text-xs text-zinc-400">conhecimentos gerais 🌍</div>
+712|               </div>
+713|             </button>
+714|             <Button
+715|               onClick={() => setQuestionPhase('hidden')}
+716|               className="w-full font-bold py-4 text-base"
+717|               style={{ background: 'transparent', color: '#666', border: '1px solid #333' }}
+718|             >
+719|               Cancelar
+720|             </Button>
+721|           </div>
+722|         </DialogContent>
+723|       </Dialog>
+724| 
+725|       {/* ===== QUESTION DIALOG: Answering ===== */}
+726|       <Dialog open={questionPhase === 'answering'} onOpenChange={(open) => {
+727|         if (!open) {
+728|           setQuestionPhase('hidden')
+729|           setTimeReduced(false)
+730|           setLastAnswerCorrect(null)
+731|           setCurrentQuestion(null)
+732|         }
+733|       }}>
+734|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+735|           <DialogHeader>
+736|             <DialogTitle className="text-center text-lg currency-bling flex items-center justify-center gap-2">
+737|               {questionCategory === 'math' ? <Brain className="w-5 h-5" /> : <BookOpen className="w-5 h-5" />}
+738|               {questionCategory === 'math' ? 'MATEMÁTICA' : 'CULTURA GERAL'}
+739|             </DialogTitle>
+740|           </DialogHeader>
+741|           {currentQuestion && (
+742|             <div className="flex flex-col items-center gap-3 mt-2">
+743|               <div className="text-xl font-bold text-white text-center leading-relaxed">
+744|                 {currentQuestion.question}
+745|               </div>
+746|               <div className="flex flex-col gap-2 w-full mt-1">
+747|                 {currentQuestion.options.map((opt, idx) => (
+748|                   <button
+749|                     key={idx}
+750|                     onClick={() => handleAnswer(idx)}
+751|                     className="option-btn"
+752|                   >
+753|                     <span className="option-letter">{'ABCDEFGHIJKLMNOPQRSTUVWXYZ' [idx]}</span>
+754|                     <span className="text-base font-semibold">{opt}</span>
+755|                   </button>
+756|                 ))}
+757|               </div>
+758|               <Button
+759|                 onClick={() => {
+760|                   setQuestionPhase('category')
+761|                   setLastAnswerCorrect(null)
+762|                   setCurrentQuestion(null)
+763|                 }}
+764|                 className="w-full font-bold py-3 text-sm mt-1"
+765|                 style={{ background: 'transparent', color: '#666', border: '1px solid #333' }}
+766|               >
+767|                 ← Voltar
+768|               </Button>
+769|             </div>
+770|           )}
+771|         </DialogContent>
+772|       </Dialog>
+773| 
+774|       {/* ===== QUESTION DIALOG: Result ===== */}
+775|       <Dialog open={questionPhase === 'result'} onOpenChange={(open) => {
+776|         if (!open) {
+777|           setQuestionPhase('hidden')
+778|           setTimeReduced(false)
+779|           setLastAnswerCorrect(null)
+780|           setCurrentQuestion
+
+[Output truncated: 7232 chars omitted]
+</content>

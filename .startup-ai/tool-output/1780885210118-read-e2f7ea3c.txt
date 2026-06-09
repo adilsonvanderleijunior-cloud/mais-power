@@ -1,0 +1,313 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+201|       clearInterval(timerRef.current)
+202|       timerRef.current = null
+203|     }
+204|   }, [])
+205| 
+206|   const handleWin = useCallback((withBonus: boolean = false) => {
+207|     stopTimer()
+208|     setGameState(withBonus ? 'bonus_won' : 'won')
+209|     const payout = withBonus ? winAmount + bonusAmountExtra : winAmount
+210|     recordResult(true, bet, payout)
+211|     setGripPressed(false)
+212|     setTimeout(() => setShowResult(true), 600)
+213|   }, [stopTimer, recordResult, bet, winAmount, bonusAmountExtra])
+214| 
+215|   const handleLoss = useCallback(() => {
+216|     setLostInBonus(phase === 'bonus')
+217|     stopTimer()
+218|     setGameState('lost')
+219|     recordResult(false, bet, 0)
+220|     setGripPressed(false)
+221|     setPhase('normal')
+222|     setTimeout(() => setShowResult(true), 400)
+223|   }, [stopTimer, recordResult, bet, phase])
+224| 
+225|   const startGame = useCallback(() => {
+226|     startTimeRef.current = Date.now()
+227|     setElapsed(0)
+228|     setPhase('normal')
+229|     setGripPressed(true)
+230|     setGameState('playing')
+231|     setShowResult(false)
+232|   }, [])
+233| 
+234|   // Start the game directly from idle (no question)
+235|   const startDirect = useCallback(() => {
+236|     // Reset any question state
+237|     setQuestionPhase('hidden')
+238|     setCurrentQuestion(null)
+239|     setLastAnswerCorrect(null)
+240|     startGame()
+241|   }, [startGame])
+242| 
+243|   // Start the game after answering a question
+244|   const startAfterQuestion = useCallback(() => {
+245|     setQuestionPhase('hidden')
+246|     setCurrentQuestion(null)
+247|     setLastAnswerCorrect(null)
+248|     startGame()
+249|   }, [startGame])
+250| 
+251|   // Open question flow: choose category
+252|   const openQuestionFlow = useCallback(() => {
+253|     setQuestionPhase('category')
+254|   }, [])
+255| 
+256|   // Choose category
+257|   const chooseCategory = useCallback((cat: QuestionCategory) => {
+258|     setQuestionCategory(cat)
+259|     const pool = cat === 'math' ? mathQuestions : generalQuestions
+260|     const q = pool[Math.floor(Math.random() * pool.length)]
+261|     setCurrentQuestion(q)
+262|     setLastAnswerCorrect(null)
+263|     setQuestionPhase('answering')
+264|   }, [])
+265| 
+266|   // Answer a question
+267|   const handleAnswer = useCallback((answerIdx: number) => {
+268|     if (!currentQuestion) return
+269|     const correct = answerIdx === currentQuestion.correct
+270|     setLastAnswerCorrect(correct)
+271|     setLastCorrectAnswerText(currentQuestion.options[currentQuestion.correct])
+272|     setTimeReduced(correct)
+273|     setQuestionPhase('result')
+274|   }, [currentQuestion])
+275| 
+276|   const onPress = useCallback(() => {
+277|     if (gameState === 'playing') {
+278|       setGripPressed(true)
+279|     }
+280|     // In idle, Apertado is handled by startDirect or openQuestionFlow separately
+281|   }, [gameState])
+282| 
+283|   const onRelease = useCallback(() => {
+284|     if (gameState === 'playing' && gripPressed) {
+285|       setGripPressed(false)
+286|       handleLoss()
+287|     }
+288|   }, [gameState, gripPressed, handleLoss])
+289| 
+290|   useEffect(() => {
+291|     if (gameState !== 'playing') return
+292| 
+293|     timerRef.current = setInterval(() => {
+294|       const now = Date.now()
+295|       const e = now - startTimeRef.current
+296|       setElapsed(e)
+297| 
+298|       if (phase === 'normal') {
+299|         if (e >= BASE_MS) {
+300|           stopTimer()
+301|           if (showBonus) {
+302|             setPhase('bonus')
+303|             bonusStartRef.current = now
+304|             setElapsed(0)
+305|           } else {
+306|             handleWin(false)
+307|           }
+308|         }
+309|       } else if (phase === 'bonus') {
+310|         const bonusE = now - bonusStartRef.current
+311|         setElapsed(bonusE)
+312|         if (bonusE >= BONUS_TARGET_MS) {
+313|           handleWin(true)
+314|         }
+315|       }
+316|     }, 33)
+317| 
+318|     return () => stopTimer()
+319|   }, [gameState, phase, BASE_MS, showBonus, handleWin, stopTimer, BONUS_TARGET_MS])
+320| 
+321|   useEffect(() => {
+322|     const onDown = (e: KeyboardEvent) => {
+323|       if (e.code === 'Space' || e.code === 'Enter') {
+324|         e.preventDefault()
+325|         onPress()
+326|       }
+327|     }
+328|     const onUp = (e: KeyboardEvent) => {
+329|       if (e.code === 'Space' || e.code === 'Enter') {
+330|         e.preventDefault()
+331|         onRelease()
+332|       }
+333|     }
+334|     window.addEventListener('keydown', onDown)
+335|     window.addEventListener('keyup', onUp)
+336|     return () => {
+337|       window.removeEventListener('keydown', onDown)
+338|       window.removeEventListener('keyup', onUp)
+339|     }
+340|   }, [onPress, onRelease])
+341| 
+342|   const resetGame = () => {
+343|     setGameState('idle')
+344|     setElapsed(0)
+345|     setShowResult(false)
+346|     setPhase('normal')
+347|     setGripPressed(false)
+348|     setLostInBonus(false)
+349|     setTimeReduced(false)
+350|     setQuestionPhase('hidden')
+351|     setCurrentQuestion(null)
+352|     setLastAnswerCorrect(null)
+353|     stopTimer()
+354|   }
+355| 
+356|   // Display timer: show total elapsed from game start (including bonus phase)
+357|   const totalElapsed = phase === 'normal' ? elapsed : BASE_MS + elapsed
+358|   const displayTime = Math.min(totalElapsed, BASE_MS + BONUS_TARGET_MS)
+359| 
+360|   const isUrgent = phase === 'normal'
+361|     ? elapsed >= BASE_MS - 10000
+362|     : elapsed >= BONUS_TARGET_MS - 10000
+363| 
+364|   const strengthProgress = Math.min(100, (elapsed / STRENGTH_MS) * 100)
+365|   const resistanceProgress = phase === 'normal'
+366|     ? Math.min(100, (elapsed / BASE_MS) * 100)
+367|     : 100
+368|   const bonusProgress = phase === 'bonus'
+369|     ? Math.min(100, (elapsed / BONUS_TARGET_MS) * 100)
+370|     : 0
+371| 
+372| 
+373|   return (
+374|     <div className="mais-gradient h-dvh w-full flex flex-col relative overflow-hidden min-h-0">
+375|       {showCapitalPrompt && (
+376|         <Dialog open={showCapitalPrompt} onOpenChange={(open) => {
+377|           if (!open && session === null) {
+378|             initSession(1000)
+379|           }
+380|         }}>
+381|           <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+382|             <DialogHeader>
+383|               <DialogTitle className="text-center text-xl currency-bling">
+384|                 💰 CAPITAL INICIAL
+385|               </DialogTitle>
+386|               <DialogDescription className="text-center text-zinc-400">
+387|                 Insira o capital inicial para começar o balanço diário
+388|               </DialogDescription>
+389|             </DialogHeader>
+390|             <CapitalPromptInline onConfirm={initSession} />
+391|           </DialogContent>
+392|         </Dialog>
+393|       )}
+394| 
+395|       {/* Background glow */}
+396|       {gameState === 'playing' && (
+397|         <div
+398|           className="absolute inset-0 pointer-events-none"
+399|           style={{
+400|             background: `radial-gradient(circle at 50% 50%, rgba(212,160,23,${0.03 + (elapsed / BASE_MS) * 0.12}) 0%, transparent 70%)`,
+401|           }}
+402|         />
+403|       )}
+404|       {gameState === 'bonus_won' && (
+405|         <div
+406|           className="absolute inset-0 pointer-events-none"
+407|           style={{
+408|             background: 'radial-gradient(circle at 50% 50%, rgba(255,107,53,0.25) 0%, transparent 70%)',
+409|           }}
+410|         />
+411|       )}
+412| 
+413|       {/* Floating emoji particles */}
+414|       {gameState === 'playing' && (
+415|         <EmojiParticles emojis={STRENGTH_EMOJIS} count={5} />
+416|       )}
+417| 
+418|       {/* Header */}
+419|       <div className="flex-none w-full">
+420|         {/* Title */}
+421|         <div className="text-center mb-1">
+422|           <h1 className="text-3xl sm:text-4xl font-black tracking-[0.15em]" style={{ color: 'var(--mais-gold)' }}>
+423|             +MAIS <span style={{ color: '#C0C0C0' }}>POWER</span>
+424|           </h1>
+425|           <p className="text-[10px] text-zinc-600 tracking-[0.3em] uppercase mt-0.5">
+426|             {gameConfig.tagline}
+427|           </p>
+428|         </div>
+429| 
+430|         {/* Tab Navigation */}
+431|         <div className="tab-nav">
+432|           <button
+433|             className={`tab-btn ${tab === 'game' ? 'tab-active' : ''}`}
+434|             onClick={() => setTab('game')}
+435|           >
+436|             <Gamepad2 className="w-5 h-5" />
+437|             JOGO
+438|           </button>
+439|           <button
+440|             className={`tab-btn ${tab === 'balance' ? 'tab-active' : ''}`}
+441|             onClick={() => setTab('balance')}
+442|           >
+443|             <BarChart3 className="w-5 h-5" />
+444|             BALANÇO
+445|           </button>
+446|         </div>
+447|       </div>
+448| 
+449|       {/* ===== GAME TAB ===== */}
+450|       {tab === 'game' && (
+451|         <div className="flex flex-col items-center gap-2 z-10 flex-1 justify-center w-full max-w-lg mx-auto px-4 min-h-0">
+452|           {/* Status + Timer */}
+453|           <div className="text-center">
+454|             <div className={`text-sm font-bold uppercase tracking-[0.2em] ${
+455|               gameState === 'playing' ? 'text-zinc-400' :
+456|               gameState === 'won' ? 'text-green-400' :
+457|               gameState === 'bonus_won' ? 'text-orange-400' :
+458|               gameState === 'lost' ? 'text-red-600' : 'text-zinc-500'
+459|             }`}>
+460|               {gameState === 'idle' && messages.idle}
+461|               {gameState === 'playing' && (phase === 'bonus' ? '🔥 BÓNUS ATIVO!' : messages.holding)}
+462|               {gameState === 'won' && messages.won}
+463|               {gameState === 'bonus_won' && '🎁 BÓNUS GANHO! 🔥'}
+464|               {gameState === 'lost' && messages.lost}
+465|             </div>
+466|             {gameState !== 'idle' && (
+467|               <div className={`timer-responsive font-black mt-2 timer-digits ${
+468|                 isUrgent ? 'timer-urgent' :
+469|                 gameState === 'won' ? 'text-green-400' :
+470|                 gameState === 'bonus_won' ? 'text-orange-400' :
+471|                 gameState === 'lost' ? 'text-zinc-500' :
+472|                 phase === 'bonus' ? 'text-orange-300' : ''
+473|               }`}>
+474|                 {gameState === 'won' && formatTime(BASE_MS)}
+475|                 {gameState === 'bonus_won' && formatTime(BASE_MS + BONUS_TARGET_MS)}
+476|                 {gameState === 'lost' && formatTime(displayTime)}
+477|                 {gameState === 'playing' && formatTime(displayTime)}
+478|               </div>
+479|             )}
+480|             {gameState === 'playing' && phase === 'bonus' && (
+481|               <div className="text-xs text-orange-400 font-bold mt-0.5 uppercase tracking-wider">
+482|                 🎯 BÓNUS: aguenta até 5:30!
+483|               </div>
+484|             )}
+485|           </div>
+486| 
+487|           {/* The Hand Grip - decorative only */}
+488|           <div className="mt-1" style={{ touchAction: 'none' }}>
+489|             <HandGrip state={gameState} />
+490|           </div>
+491| 
+492|           {/* Apertado / Abriu buttons */}
+493|           {gameState === 'playing' && (
+494|             <div className="flex gap-4 mt-1">
+495|               <button
+496|                 onClick={onPress}
+497|                 className={`grip-btn apertado-btn ${gripPressed ? 'apertado-active' : ''}`}
+498|                 style={{ touchAction: 'manipulation' }}
+499|               >
+500|                 <span className="text-2xl">💪</span>
+501|                 <span className="text-lg font-black tracking-wider">APERTADO</span>
+502|                 {gripPressed && <div className="apertado-pulse" />}
+503|               </button>
+504|               <button
+505|                 onClick={onRelease}
+506|                 className="grip-btn abriu-btn"
+507|                 style={{ 
+
+[Output truncated: 9250 chars omitted]
+</content>

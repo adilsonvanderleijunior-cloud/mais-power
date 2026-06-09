@@ -1,0 +1,106 @@
+<path requested="src/data/siteContent.ts" resolved="src/data/siteContent.ts"></path>
+<type>file</type>
+<content>
+ 32|   { question: '-5 - 5 = ?', options: ['0', '-10', '10', '-15'], correct: 1 },
+ 33|   { question: '-2 = x, qual o valor de x?', options: ['2', '0', '-2', '1'], correct: 2 },
+ 34|   { question: '-3 + 7 = ?', options: ['4', '-4', '10', '-10'], correct: 0 },
+ 35|   { question: 'Qual é o dobro de -6?', options: ['12', '-12', '3', '-3'], correct: 1 },
+ 36|   { question: '(-2) × (-3) = ?', options: ['-6', '6', '5', '-5'], correct: 1 },
+ 37|   { question: '-10 + (-5) = ?', options: ['5', '-15', '-5', '15'], correct: 1 },
+ 38|   { question: '8 - (-2) = ?', options: ['6', '-6', '10', '-10'], correct: 2 },
+ 39|   { question: 'O oposto de -7 é?', options: ['7', '-7', '0', '14'], correct: 0 },
+ 40|   { question: '-4 × 3 = ?', options: ['12', '-12', '1', '-1'], correct: 1 },
+ 41|   { question: '-15 ÷ 3 = ?', options: ['5', '-5', '3', '-3'], correct: 1 },
+ 42|   { question: '(-1) × (-1) × (-1) = ?', options: ['1', '-1', '0', '3'], correct: 1 },
+ 43|   { question: 'Qual é o valor de | -8 |?', options: ['-8', '8', '0', '16'], correct: 1 },
+ 44|   { question: '5 - 10 = ?', options: ['5', '-5', '15', '-15'], correct: 1 },
+ 45|   { question: '-100 ÷ (-25) = ?', options: ['4', '-4', '25', '-25'], correct: 0 },
+ 46|   { question: '2x = -10, qual o valor de x?', options: ['-5', '5', '10', '-20'], correct: 0 },
+ 47| ]
+ 48| 
+ 49| export const generalQuestions: Question[] = [
+ 50|   {
+ 51|     question: 'Qual é a capital de Angola?',
+ 52|     options: ['Luanda', 'Benguela', 'Huambo', 'Lubango'],
+ 53|     correct: 0,
+ 54|   },
+ 55|   {
+ 56|     question: 'Quantos minutos tem 1 hora?',
+ 57|     options: ['30', '45', '60', '100'],
+ 58|     correct: 2,
+ 59|   },
+ 60|   {
+ 61|     question: 'O sol nasce a que lado?',
+ 62|     options: ['Nascente', 'Poente', 'Norte', 'Sul'],
+ 63|     correct: 0,
+ 64|   },
+ 65|   {
+ 66|     question: 'Qual destes é um metal precioso?',
+ 67|     options: ['Ouro', 'Ferro', 'Cobre', 'Alumínio'],
+ 68|     correct: 0,
+ 69|   },
+ 70|   {
+ 71|     question: 'Quantos dias tem uma semana?',
+ 72|     options: ['5', '6', '7', '8'],
+ 73|     correct: 2,
+ 74|   },
+ 75|   {
+ 76|     question: 'Qual é o maior oceano do mundo?',
+ 77|     options: ['Atlântico', 'Índico', 'Pacífico', 'Ártico'],
+ 78|     correct: 2,
+ 79|   },
+ 80|   {
+ 81|     question: 'O futebol joga-se com as mãos?',
+ 82|     options: ['Sim', 'Não', 'Às vezes', 'Depende'],
+ 83|     correct: 1,
+ 84|   },
+ 85|   {
+ 86|     question: 'Qual destes países fica em África?',
+ 87|     options: ['Brasil', 'Portugal', 'Angola', 'Espanha'],
+ 88|     correct: 2,
+ 89|   },
+ 90|   {
+ 91|     question: 'Quantos meses tem um ano?',
+ 92|     options: ['10', '11', '12', '13'],
+ 93|     correct: 2,
+ 94|   },
+ 95|   {
+ 96|     question: 'O diamante é um mineral?',
+ 97|     options: ['Sim', 'Não', 'Planta', 'Metal'],
+ 98|     correct: 0,
+ 99|   },
+100|   {
+101|     question: 'Qual o maior país do mundo?',
+102|     options: ['EUA', 'China', 'Rússia', 'Canadá'],
+103|     correct: 2,
+104|   },
+105|   {
+106|     question: 'Quantas cores tem o arco-íris?',
+107|     options: ['5', '6', '7', '8'],
+108|     correct: 2,
+109|   },
+110|   {
+111|     question: 'Em que continente fica o Egito?',
+112|     options: ['Europa', 'Ásia', 'África', 'América'],
+113|     correct: 2,
+114|   },
+115|   {
+116|     question: 'Qual o animal mais rápido do mundo?',
+117|     options: ['Leão', 'Guepardo', 'Águia', 'Cavalo'],
+118|     correct: 1,
+119|   },
+120|   {
+121|     question: 'Quantos lados tem um triângulo?',
+122|     options: ['2', '3', '4', '5'],
+123|     correct: 1,
+124|   },
+125| ]
+126| 
+127| // SAÚDE - perguntas de rasteira
+128| export const saudeQuestions: Question[] = [
+129|   { question: 'Qual é o maior órgão do corpo humano?', options: ['Coração', 'Fígado', 'Pele', 'Pulmão'], correct: 2 },
+130|   { question: 'Quantos ossos tem o corpo humano adulto?', options: ['106', '206', '306', '150'], correct: 1 },
+131|   { question: 'O coração bate em média quantas vezes por dia?', options: ['10.000', '100.000', '1.000.000', '50.000'], correct: 1 },
+
+[Showing lines 32-131 of 358. Use offset=131 to continue.]
+</content>

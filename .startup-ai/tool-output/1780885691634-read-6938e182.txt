@@ -1,0 +1,91 @@
+<path requested="vite.config.ts" resolved="vite.config.ts"></path>
+<type>file</type>
+<content>
+ 2| import fs from "node:fs";
+ 3| import react from "@vitejs/plugin-react";
+ 4| import { VitePWA } from "vite-plugin-pwa";
+ 5| import { defineConfig } from "vite";
+ 6| 
+ 7| function serveZipPlugin() {
+ 8|   const zipPath = "/home/user/mais-power-completo.zip";
+ 9|   return {
+10|     name: "serve-zip",
+11|     configureServer(server: any) {
+12|       server.middlewares.use("/download-zip", (_req: any, res: any, next: any) => {
+13|         if (!fs.existsSync(zipPath)) { return next(); }
+14|         const stat = fs.statSync(zipPath);
+15|         res.writeHead(200, {
+16|           "Content-Type": "application/zip",
+17|           "Content-Disposition": 'attachment; filename="mais-power-completo.zip"',
+18|           "Content-Length": stat.size,
+19|         });
+20|         fs.createReadStream(zipPath).pipe(res);
+21|       });
+22|     },
+23|   };
+24| }
+25| 
+26| export default defineConfig({
+27|   plugins: [
+28|     react(),
+29|     serveZipPlugin(),
+30|     VitePWA({
+31|       registerType: "autoUpdate",
+32|       includeAssets: ["favicon.svg", "icons.svg"],
+33|       manifest: {
+34|         name: "+MAIS POWER",
+35|         short_name: "+MAIS POWER",
+36|         description: "Jogo de resistência com hand grip — aperte e segure!",
+37|         theme_color: "#000000",
+38|         background_color: "#000000",
+39|         display: "standalone",
+40|         orientation: "portrait",
+41|         start_url: "/",
+42|         icons: [
+43|           {
+44|             src: "/favicon.svg",
+45|             sizes: "192x192",
+46|             type: "image/svg+xml",
+47|           },
+48|           {
+49|             src: "/favicon.svg",
+50|             sizes: "512x512",
+51|             type: "image/svg+xml",
+52|           },
+53|         ],
+54|       },
+55|       workbox: {
+56|         globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
+57|         runtimeCaching: [
+58|           {
+59|             urlPattern: /^https?:\/\/.*/i,
+60|             handler: "NetworkFirst",
+61|             options: {
+62|               cacheName: "external-cache",
+63|               expiration: {
+64|                 maxEntries: 50,
+65|                 maxAgeSeconds: 60 * 60 * 24 * 30,
+66|               },
+67|             },
+68|           },
+69|         ],
+70|       },
+71|     }),
+72|   ],
+73|   resolve: {
+74|     alias: {
+75|       "@": path.resolve(__dirname, "./src"),
+76|     },
+77|   },
+78|   server: {
+79|     allowedHosts: [".e2b.app"],
+80|     host: "0.0.0.0",
+81|   },
+82|   preview: {
+83|     host: "0.0.0.0",
+84|   },
+85| });
+86| 
+
+[End of file: 86 lines]
+</content>

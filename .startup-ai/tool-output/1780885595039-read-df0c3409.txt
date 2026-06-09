@@ -1,0 +1,86 @@
+<path requested="src/pages/Index.tsx" resolved="src/pages/Index.tsx"></path>
+<type>file</type>
+<content>
+621| 
+622|               {/* Action buttons row */}
+623|               <div className="flex gap-3 mt-3 w-full">
+624|                 <button
+625|                   onClick={startDirect}
+626|                   className="start-btn flex-1 py-3 sm:py-4 text-sm sm:text-base"
+627|                   style={{ touchAction: 'manipulation' }}
+628|                 >
+629|                   <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6" />
+630|                   APERTADO 💪
+631|                 </button>
+632|                 <button
+633|                   onClick={openQuestionFlow}
+634|                   className="question-btn flex-1 py-3 sm:py-4 text-sm sm:text-base"
+635|                   style={{ touchAction: 'manipulation' }}
+636|                 >
+637|                   <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+638|                   PERGUNTA?
+639|                 </button>
+640|               </div>
+641|             </div>
+642|           )}
+643| 
+644|           {/* Prize display */}
+645|           {(gameState === 'playing' || gameState === 'won' || gameState === 'bonus_won') && (
+646|             <div className="text-center mt-1">
+647|               <div className="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-0.5 font-bold">
+648|                 🏆 Prémio
+649|               </div>
+650|               <div className={`text-3xl font-black ${
+651|                 gameState === 'bonus_won' ? 'text-orange-400' : 'currency-bling'
+652|               }`}>
+653|                 Kz {winAmount.toLocaleString('pt-AO')}
+654|               </div>
+655|               {phase === 'bonus' && (
+656|                 <div className="text-xl font-black text-orange-400 mt-0.5">
+657|                   + BÓNUS Kz {bonusAmountExtra.toLocaleString('pt-AO')}
+658|                 </div>
+659|               )}
+660|               {gameState === 'bonus_won' && (
+661|                 <div className="text-lg font-black text-orange-400 mt-0.5">
+662|                   🎁 +Kz {bonusAmountExtra.toLocaleString('pt-AO')}
+663|                 </div>
+664|               )}
+665|             </div>
+666|           )}
+667|         </div>
+668|       )}
+669| 
+670|       {/* ===== BALANCE TAB ===== */}
+671|       {tab === 'balance' && (
+672|         <div className="z-10 flex-1 overflow-y-auto px-4 py-2 w-full max-w-lg mx-auto">
+673|           <BalanceDashboard
+674|             session={session}
+675|             onReset={resetSession}
+676|           />
+677|         </div>
+678|       )}
+679| 
+680|       {/* ===== QUESTION DIALOG: Category Choice ===== */}
+681|       <Dialog open={questionPhase === 'category'} onOpenChange={(open) => {
+682|         if (!open) {
+683|           setQuestionPhase('hidden')
+684|           setTimeReduced(false)
+685|           setLastAnswerCorrect(null)
+686|           setCurrentQuestion(null)
+687|         }
+688|       }}>
+689|         <DialogContent className="bg-[#0a0a0a] border-zinc-800 text-white max-w-sm dialog-3d">
+690|             <DialogHeader>
+691|               <DialogTitle className="text-center text-xl currency-bling">
+692|                 ❓ ESCOLHA A CATEGORIA
+693|             </DialogTitle>
+694|             <DialogDescription className="text-center text-zinc-400">
+695|               Se acertar, o tempo reduz para 2:30 ⚡<br />
+696|               Se errar, mantém 3:00
+697|             </DialogDescription>
+698|           </DialogHeader>
+699|           <div className="flex flex-col gap-2 mt-2">
+700|             <button
+
+[Showing lines 621-700 of 988. Use offset=700 to continue.]
+</content>
