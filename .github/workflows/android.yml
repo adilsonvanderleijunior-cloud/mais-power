@@ -21,10 +21,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install depend
-
-
-encies
+      - name: Install dependencies
         run: npm install
 
       - name: Add Android platform
@@ -51,6 +48,8 @@ encies
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           
+
+
 
 
 
